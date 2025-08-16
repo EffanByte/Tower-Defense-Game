@@ -1,0 +1,23 @@
+{
+  "grid_size": {
+    "width": 32,
+    "height": 18
+  },
+  "spawner": {
+    "x": 0,
+    "y": 9
+  },
+  "exit": {
+    "x": 31,
+    "y": 12
+  },
+  "tiles": {
+    "road.csv": "1 = road; 0 = not road",
+    "buildable.csv": "1 = buildable; 0 = not buildable (road or border)"
+  },
+  "notes": [
+    "Use buildable=1 cells for tower placement.",
+    "Use road=1 cells for creep path; do not allow placement that turns any road cell into occupied.",
+    "Origin (0,0) is top-left; y grows downward."
+  ]
+}
