@@ -91,7 +91,7 @@ public class TDLevel : MonoBehaviour
                 // Accept 0/1 or truthy strings
                 var s = parts[x].Trim();
                 int iv;
-                bool bv = (int.TryParse(s, NumberStyles.Integer, CultureInfo.InvariantCulture, out iv) ? iv != 0 : s == "true" || s == "True");
+                bool bv = int.TryParse(s, NumberStyles.Integer, CultureInfo.InvariantCulture, out iv) ? iv != 0 : s == "true" || s == "True";
                 grid[y, x] = bv;
             }
         }
