@@ -2,19 +2,22 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class EnemySpawner : MonoBehaviour
+public class EnemyManager : MonoBehaviour
 {
     public TDLevel level;
-    public int spawnerIndex = 0;
-    public GameObject enemyPrefab;
-    public float spawnInterval = 1.0f;
-    public int countPerWave = 10;
+    [SerializeField] private int spawnerIndex = 0;
+    [SerializeField] private GameObject enemyPrefab;
+    [SerializeField] private float spawnInterval = 1.0f;
+    [SerializeField] private int countPerWave = 10;
 
     [Header("Motion defaults")]
-    public float enemySpeed = 3.5f;
-    public float enemyY = 0.1f;
+    [SerializeField] private float enemySpeed = 3.5f;
+    [SerializeField] private float enemyY = 0.1f;
 
-    IReadOnlyList<Vector3> _waypoints;  
+    IReadOnlyList<Vector3> _waypoints;
+
+    [Header("Leak settings")]
+    [Min(1)] public int leakDamage = 1;   // how much health to remove per escaped enemy
 
     void Start()
     {
@@ -46,7 +49,18 @@ public class EnemySpawner : MonoBehaviour
 
     void OnEnemyReachedEnd(EnemyPathAgent agent)
     {
-        // TODO: apply base damage, then destroy or return to pool
+        // Apply leak damage, then clean up the enemy
+        var hm = HealthManager.Instance;
+        if (hm)
+        {
+            hm.Damage(leakDamage);
+            Debug.Log($"[EnemySpawner] Enemy leaked. -{leakDamage} HP → {hm.Current}/{hm.maxHealth}");
+        }
+        else
+        {
+            Debug.LogWarning("[EnemySpawner] No HealthManager in scene.");
+        }
+
         Destroy(agent.gameObject);
     }
 }
