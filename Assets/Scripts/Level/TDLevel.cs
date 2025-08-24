@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.IO;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.Tilemaps;
@@ -66,8 +67,9 @@ public class TDLevel : MonoBehaviour
             if (path == null || path.Count == 0)
                 Debug.LogError($"No road path from spawner {i} at {spawners[i]} to exit {exitCell}.");
             else
-                _bakedPaths[i] = path;
+                _bakedPaths[i] = path; // sets baked path
         }
+        // Paths are being added here, but maybe this script runs after baked paths are set
     }
 
     #region CSV / Painting
