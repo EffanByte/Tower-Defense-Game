@@ -10,6 +10,8 @@ public class EnemyManager : MonoBehaviour
     [SerializeField] private float spawnInterval = 1.0f;
     [SerializeField] private int countPerWave = 10;
 
+
+
     [Header("Motion defaults")]
     [SerializeField] private float enemySpeed = 3.5f;
     [SerializeField] private float enemyY = 0.1f;
@@ -49,18 +51,18 @@ public class EnemyManager : MonoBehaviour
 
     void OnEnemyReachedEnd(EnemyPathAgent agent)
     {
-        // Apply leak damage, then clean up the enemy
-        var hm = HealthManager.Instance;
-        if (hm)
+        var hm = HealthManager.GetHealthManager();
+        if (hm != null)
         {
             hm.Damage(leakDamage);
-            Debug.Log($"[EnemySpawner] Enemy leaked. -{leakDamage} HP → {hm.Current}/{hm.maxHealth}");
+            Debug.Log($"[EnemyManager] Leak: -{leakDamage} HP → {hm.Current}/{hm.maxHealth}");
         }
         else
         {
-            Debug.LogWarning("[EnemySpawner] No HealthManager in scene.");
+            Debug.LogWarning("[EnemyManager] No HealthManager in scene.");
         }
 
         Destroy(agent.gameObject);
     }
+
 }

@@ -49,6 +49,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets\Scripts\Enemy\EnemySpawner.cs" />
+    <Compile Include="Assets\Scripts\Manager\HealthTextUI.cs" />
     <Compile Include="Assets\Scripts\Level\AutoSizeBoxCollider.cs" />
     <Compile Include="Assets\Scripts\Tower\TowerBuildController.cs" />
     <Compile Include="Assets\Scripts\Level\FitToGridCell.cs" />
