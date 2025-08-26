@@ -90,9 +90,6 @@ public class GunTurret : MonoBehaviour
 
     void Shoot(Transform target)
     {
-        // Apply recoil instantly
-        recoilAmount = recoilDistance;
-
         var agent = target.GetComponent<EnemyPathAgent>();
         if (agent != null)
         {
@@ -100,6 +97,11 @@ public class GunTurret : MonoBehaviour
             if (manager != null)
             {
                 manager.NotifyEnemyKilled(agent);
+
+                // increment this tower's kills
+                var details = GetComponent<TowerDetail>();
+                if (details) details.AddKill();
+
                 Debug.Log($"[Turret] Shot {target.name} → notified {manager.name}");
             }
             else
@@ -114,6 +116,7 @@ public class GunTurret : MonoBehaviour
             Destroy(target.gameObject);
         }
     }
+
 
     void OnDrawGizmosSelected()
     {

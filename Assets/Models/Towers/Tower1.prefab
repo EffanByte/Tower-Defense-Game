@@ -79,6 +79,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: d74352572614b904991f6b472db586df, type: 3}
       insertIndex: -1
       addedObject: {fileID: 2730494737688254627}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: d74352572614b904991f6b472db586df, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: -8322091183107274150}
   m_SourcePrefab: {fileID: 100100000, guid: d74352572614b904991f6b472db586df, type: 3}
 --- !u!1 &7968320754780665983 stripped
 GameObject:
@@ -100,4 +103,20 @@ MonoBehaviour:
   range: 4
   enemyLayerName: Enemy
   fireCooldown: 1.5
+  recoilDistance: 0.2
   fireTimer: 0
+--- !u!114 &-8322091183107274150
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7968320754780665983}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: eda31ab7cd337a14da0cca608a01b80b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  towerName: Gun
+  kills: 0
+  level: 1

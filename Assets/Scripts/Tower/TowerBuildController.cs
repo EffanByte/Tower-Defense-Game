@@ -4,7 +4,7 @@ using UnityEngine.InputSystem;
 using UnityEngine.EventSystems;
 using UnityEngine.Tilemaps;
 
-public class TowerBuildController : MonoBehaviour
+public class BuildingController : MonoBehaviour
 {
     [Header("Refs")]
     public Camera cam;                         // if null, uses Camera.main
@@ -79,7 +79,7 @@ public class TowerBuildController : MonoBehaviour
         // Ignore if pointer is over UI
         if (EventSystem.current != null && EventSystem.current.IsPointerOverGameObject())
         {
-            // We just clicked a UI element (e.g., one of your pictures)
+            // clicked a UI element
             return;
         }
 
@@ -95,7 +95,7 @@ public class TowerBuildController : MonoBehaviour
             return;
         }
 
-        // Get tilemap (prefer from hit; else use assigned reference)
+        // Get tilemap
         Tilemap tm = hit.collider ? hit.collider.GetComponentInParent<Tilemap>() : null;
         if (!tm) tm = buildableTilemap;
         if (!tm)
@@ -104,7 +104,7 @@ public class TowerBuildController : MonoBehaviour
             return;
         }
 
-        // World → cell (nudge inside)
+        // World -> cell
         Vector3 nudged = hit.point - hit.normal * 0.001f;
         Vector3Int cell = tm.WorldToCell(nudged);
 
@@ -114,7 +114,7 @@ public class TowerBuildController : MonoBehaviour
             return;
         }
 
-        // Convert to TD grid coords if using TDLevel
+        // Convert to TD grid coords
         Vector2Int logical = new Vector2Int(cell.x, tileYInvertedForTDLevel ? -cell.y : cell.y);
 
         bool canPlace = true;
@@ -133,7 +133,7 @@ public class TowerBuildController : MonoBehaviour
         spawn.y = placeY;
 
         Instantiate(prefab, spawn, Quaternion.identity);
-
+        selected = -1; // clear selection after place
         if (level) level.SetOccupied(logical, footprint, true);
     }
 }

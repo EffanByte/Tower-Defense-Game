@@ -48,6 +48,7 @@
     <Analyzer Include="C:\Program Files\Unity 6000.0.51f1\Editor\Data\Tools\Unity.SourceGenerators\Unity.UIToolkit.SourceGenerator.dll" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Assets\Scripts\Tower\TowerDetail.cs" />
     <Compile Include="Assets\Scripts\Enemy\EnemySpawner.cs" />
     <Compile Include="Assets\Scripts\Manager\HealthTextUI.cs" />
     <Compile Include="Assets\Scripts\Level\AutoSizeBoxCollider.cs" />

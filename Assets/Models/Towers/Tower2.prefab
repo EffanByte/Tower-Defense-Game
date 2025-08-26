@@ -75,6 +75,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 7dc9b599eb9ab604cb7d608c543b2d6a, type: 3}
       insertIndex: -1
       addedObject: {fileID: -3031446221859533789}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 7dc9b599eb9ab604cb7d608c543b2d6a, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: -6886888559176006001}
   m_SourcePrefab: {fileID: 100100000, guid: 7dc9b599eb9ab604cb7d608c543b2d6a, type: 3}
 --- !u!1 &7211780291027444776 stripped
 GameObject:
@@ -96,4 +99,20 @@ MonoBehaviour:
   range: 8
   enemyLayerName: Enemy
   fireCooldown: 1.5
+  recoilDistance: 0.2
   fireTimer: 0
+--- !u!114 &-6886888559176006001
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7211780291027444776}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: eda31ab7cd337a14da0cca608a01b80b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  towerName: Sniper
+  kills: 0
+  level: 1
