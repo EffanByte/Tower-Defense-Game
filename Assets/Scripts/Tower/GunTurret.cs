@@ -22,6 +22,9 @@ public class GunTurret : MonoBehaviour
     public float fireTimer = 0f;
     private float recoilAmount = 0f; // how much recoil is currently applied
 
+    [Header("Damage")]
+    [SerializeField] private int baseDamage = 10;
+
     void Awake()
     {
         if (!gun && transform.childCount > 1)
@@ -85,31 +88,16 @@ public class GunTurret : MonoBehaviour
     void Shoot(Transform target)
     {
         recoilAmount = recoilDistance;
-        
+
+        var health = target.GetComponent<EnemyHealth>();
         var agent = target.GetComponent<EnemyPathAgent>();
-        if (agent != null)
-        {
-            var manager = agent.GetComponentInParent<EnemySpawner>();
-            if (manager != null)
-            {
-                manager.NotifyEnemyKilled(agent);
+        var manager = agent ? agent.GetComponentInParent<EnemySpawner>() : null;
 
-                // increment this tower's kills
-                var details = GetComponent<TowerDetail>();
-                if (details) details.AddKill();
-
-            }
-            else
-            {
-                Debug.LogWarning($"[Turret] No EnemyManager found for {target.name}, destroying directly.");
-                Destroy(agent.gameObject);
-            }
-        }
-        else
+        if (health != null)
         {
-            Debug.LogWarning($"[Turret] Target {target.name} has no EnemyPathAgent, destroying directly.");
-            Destroy(target.gameObject);
-        }
+            health.TakeDamage(baseDamage, manager, agent);
+            Debug.Log($"[GunTurret] Shot {target.name} for {baseDamage} dmg (HP left: {health.CurrentHealth})");
+        }  
     }
 
 

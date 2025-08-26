@@ -50,6 +50,7 @@
   <ItemGroup>
     <Compile Include="Assets\Scripts\Tower\TowerDetail.cs" />
     <Compile Include="Assets\Scripts\Enemy\EnemySpawner.cs" />
+    <Compile Include="Assets\Scripts\Enemy\EnemyHealth.cs" />
     <Compile Include="Assets\Scripts\Tower\FlameTurret.cs" />
     <Compile Include="Assets\Scripts\Manager\HealthTextUI.cs" />
     <Compile Include="Assets\Scripts\Level\AutoSizeBoxCollider.cs" />
@@ -58,6 +59,7 @@
     <Compile Include="Assets\Scripts\Tower\GunTurret.cs" />
     <Compile Include="Assets\Scripts\Tower\RotateTower.cs" />
     <Compile Include="Assets\Scripts\Level\TDLevel.cs" />
+    <Compile Include="Assets\Scripts\Tower\UltimateOPTower.cs" />
     <Compile Include="Assets\Scripts\Enemy\EnemyPathAgent.cs" />
     <Compile Include="Assets\_Addons\TutorialInfo\Scripts\Readme.cs" />
     <Compile Include="Assets\Scripts\Manager\WaveManager.cs" />

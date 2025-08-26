@@ -15,6 +15,8 @@ public class FlameTurret : MonoBehaviour
     private int enemyLayer;
     private float fireTimer = 0f;
 
+    [Header("Damage")]
+    [SerializeField] private int baseDamage = 5; // per tick
     void Awake()
     {
 
@@ -37,25 +39,16 @@ public class FlameTurret : MonoBehaviour
     void ShootAll()
     {
         Collider[] hits = Physics.OverlapSphere(transform.position, range, 1 << enemyLayer);
-
-        if (hits.Length == 0) return;
-
         foreach (var hit in hits)
         {
+            var health = hit.GetComponent<EnemyHealth>();
             var agent = hit.GetComponent<EnemyPathAgent>();
-            if (agent != null)
+            var manager = agent ? agent.GetComponentInParent<EnemySpawner>() : null;
+
+            if (health != null)
             {
-                var manager = agent.GetComponentInParent<EnemySpawner>();
-                if (manager != null)
-                {
-                    manager.NotifyEnemyKilled(agent);
-                    Debug.Log($"[FlameTurret] Burned {hit.name} → notified {manager.name}");
-                }
-                else
-                {
-                    Debug.LogWarning($"[FlameTurret] No EnemyManager for {hit.name}, destroying directly.");
-                    Destroy(agent.gameObject);
-                }
+                health.TakeDamage(baseDamage, manager, agent);
+                Debug.Log($"[FlameTurret] Burned {hit.name} for {baseDamage} dmg (HP left: {health.CurrentHealth})");
             }
         }
     }
