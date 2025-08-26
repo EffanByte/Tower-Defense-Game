@@ -132,7 +132,7 @@ public class TowerBuildController : MonoBehaviour
         var prefab = towerPrefabs[selected];
         if (!prefab) { Debug.Log("[TowerBuildController] Selected prefab is null."); return; }
 
-        Vector3 spawn = tm.GetCellCenterWorld(cell);
+        Vector3 spawn = tm.GetCellCenterWorld(cell) + new Vector3(-0.5f,0,0); // Add vector so tower is centered
         spawn.y = placeY;
 
         Instantiate(prefab, spawn, Quaternion.identity);
