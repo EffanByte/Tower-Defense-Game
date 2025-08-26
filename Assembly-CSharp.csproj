@@ -57,8 +57,10 @@
     <Compile Include="Assets\Scripts\Tower\TowerBuildController.cs" />
     <Compile Include="Assets\Scripts\Level\FitToGridCell.cs" />
     <Compile Include="Assets\Scripts\Tower\GunTurret.cs" />
+    <Compile Include="Assets\Scripts\Tower\TowerUpgrade.cs" />
     <Compile Include="Assets\Scripts\Tower\RotateTower.cs" />
     <Compile Include="Assets\Scripts\Level\TDLevel.cs" />
+    <Compile Include="Assets\Scripts\Enemy\EnemyHealthBarUI.cs" />
     <Compile Include="Assets\Scripts\Tower\UltimateOPTower.cs" />
     <Compile Include="Assets\Scripts\Enemy\EnemyPathAgent.cs" />
     <Compile Include="Assets\_Addons\TutorialInfo\Scripts\Readme.cs" />
@@ -1247,6 +1249,10 @@
     </Reference>
     <Reference Include="Unity.VisualScripting.State">
       <HintPath>Library\ScriptAssemblies\Unity.VisualScripting.State.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Unity.2D.Sprite.Editor">
+      <HintPath>Library\ScriptAssemblies\Unity.2D.Sprite.Editor.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Unity.AI.Navigation.Editor.ConversionSystem">

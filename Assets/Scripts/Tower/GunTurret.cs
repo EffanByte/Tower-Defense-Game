@@ -1,29 +1,28 @@
 using UnityEngine;
 
+[RequireComponent(typeof(TowerUpgrade))]
 public class GunTurret : MonoBehaviour
 {
     [Header("Gun setup")]
     private Transform gun; // assign in inspector, or defaults to child 1
     private Vector3 gunDefaultLocalPos;
 
-    [Header("Targeting")]
-    [SerializeField] private float range = 8f;
-    public string enemyLayerName = "Enemy";
-
-    [Header("Firing")]
-    [Tooltip("Seconds between shots (default 1.5s).")]
-    [SerializeField] public float fireCooldown = 1.5f;
+    [Header("Base Stats")]
+    [SerializeField] private int baseDamage = 10;
+    [SerializeField] private float baseCooldown = 1.5f;
+    [SerializeField] private float baseRange = 8f;
 
     [Header("Recoil")]
-    [SerializeField] private float recoilDistance = 0.5f;   // how far back the gun jumps
-    private float recoilReturnSpeed; // how quickly it returns
+    [SerializeField] private float recoilDistance = 0.5f;
+    private float recoilReturnSpeed;
 
+    [Header("Targeting")]
+    public string enemyLayerName = "Enemy";
+
+    private TowerUpgrade upgrade;
     private int enemyLayer;
-    public float fireTimer = 0f;
-    private float recoilAmount = 0f; // how much recoil is currently applied
-
-    [Header("Damage")]
-    [SerializeField] private int baseDamage = 10;
+    private float fireTimer = 0f;
+    private float recoilAmount = 0f;
 
     void Awake()
     {
@@ -31,10 +30,15 @@ public class GunTurret : MonoBehaviour
             gun = transform.GetChild(1);
         if (gun) gunDefaultLocalPos = gun.localPosition;
 
+        upgrade = GetComponent<TowerUpgrade>();
+        if (upgrade)
+            upgrade.Init(baseDamage, baseCooldown, baseRange);
+
         enemyLayer = LayerMask.NameToLayer(enemyLayerName);
         if (enemyLayer < 0)
             Debug.LogError($"Layer '{enemyLayerName}' not found! Add it in Unity's Layer settings.");
-        recoilReturnSpeed = fireCooldown;
+
+        recoilReturnSpeed = baseCooldown;
     }
 
     void Update()
@@ -53,13 +57,14 @@ public class GunTurret : MonoBehaviour
             if (fireTimer <= 0f)
             {
                 Shoot(target);
-                fireTimer = fireCooldown; // reset cooldown
+                fireTimer = upgrade.CurrentCooldown;
             }
         }
 
         // Smoothly return from recoil
         if (gun)
         {
+            recoilReturnSpeed = upgrade.CurrentCooldown; // use current cooldown scaling
             recoilAmount = Mathf.MoveTowards(recoilAmount, 0f, recoilReturnSpeed * Time.deltaTime);
             gun.localPosition = gunDefaultLocalPos + gun.localRotation * Vector3.back * recoilAmount;
         }
@@ -67,7 +72,7 @@ public class GunTurret : MonoBehaviour
 
     Transform GetClosestEnemy()
     {
-        Collider[] hits = Physics.OverlapSphere(transform.position, range, 1 << enemyLayer);
+        Collider[] hits = Physics.OverlapSphere(transform.position, upgrade.CurrentRange, 1 << enemyLayer);
 
         float minDist = Mathf.Infinity;
         Transform nearest = null;
@@ -95,15 +100,15 @@ public class GunTurret : MonoBehaviour
 
         if (health != null)
         {
-            health.TakeDamage(baseDamage, manager, agent);
-            Debug.Log($"[GunTurret] Shot {target.name} for {baseDamage} dmg (HP left: {health.CurrentHealth})");
-        }  
+            health.TakeDamage(upgrade.CurrentDamage, manager, agent);
+            Debug.Log($"[GunTurret] Shot {target.name} for {upgrade.CurrentDamage} dmg (HP left: {health.CurrentHealth})");
+        }
     }
-
 
     void OnDrawGizmosSelected()
     {
         Gizmos.color = Color.red;
-        Gizmos.DrawWireSphere(transform.position, range);
+        float r = upgrade ? upgrade.CurrentRange : baseRange;
+        Gizmos.DrawWireSphere(transform.position, r);
     }
 }

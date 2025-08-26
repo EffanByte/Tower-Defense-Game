@@ -90,6 +90,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: d74352572614b904991f6b472db586df, type: 3}
       insertIndex: -1
       addedObject: {fileID: -8322091183107274150}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: d74352572614b904991f6b472db586df, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: -7079774285209848766}
   m_SourcePrefab: {fileID: 100100000, guid: d74352572614b904991f6b472db586df, type: 3}
 --- !u!1 &7968320754780665983 stripped
 GameObject:
@@ -113,6 +116,7 @@ MonoBehaviour:
   fireCooldown: 1.5
   recoilDistance: 0.5
   fireTimer: 0
+  baseDamage: 10
 --- !u!114 &-8322091183107274150
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -128,3 +132,27 @@ MonoBehaviour:
   towerName: Gun
   kills: 0
   level: 1
+--- !u!114 &-7079774285209848766
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7968320754780665983}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c5ccad20359c9474ead5d9dcfd307750, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  baseDamage: 10
+  baseFireCooldown: 1.5
+  baseRange: 6
+  damageLevel: 1
+  speedLevel: 1
+  rangeLevel: 1
+  damageStep: 10
+  speedStep: 0.2
+  rangeStep: 2
+  smallDamageStep: 2
+  smallSpeedStep: 0.05
+  MaxRangeLevel: 3

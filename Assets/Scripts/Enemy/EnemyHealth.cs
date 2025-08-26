@@ -12,17 +12,27 @@ public class EnemyHealth : MonoBehaviour
     // Hook into managers/UI
     public System.Action<EnemyHealth> OnDeath;
     public System.Action<EnemyHealth, int> OnDamaged; // (enemy, newHP)
-
+    [SerializeField] private GameObject healthBarPrefab;
+    private EnemyHealthUI healthUI;
     void Awake()
     {
         currentHealth = maxHealth;
     }
-
+    void Start()
+    {
+        if (healthBarPrefab)
+        {
+            var bar = Instantiate(healthBarPrefab, transform);
+            healthUI = bar.GetComponent<EnemyHealthUI>();
+            if (healthUI) healthUI.Init(this);
+        }
+    }
     public void Init(int newMaxHealth)
     {
         maxHealth = newMaxHealth;
         currentHealth = maxHealth;
     }
+
 
     public void TakeDamage(int amount, EnemySpawner manager = null, EnemyPathAgent agent = null)
     {
