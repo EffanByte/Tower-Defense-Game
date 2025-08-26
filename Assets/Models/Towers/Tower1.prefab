@@ -68,6 +68,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Tower1
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: d74352572614b904991f6b472db586df, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -75,6 +79,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: d74352572614b904991f6b472db586df, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1003761513900582848}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: d74352572614b904991f6b472db586df, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 2730494737688254627}
   m_SourcePrefab: {fileID: 100100000, guid: d74352572614b904991f6b472db586df, type: 3}
 --- !u!1 &7968320754780665983 stripped
 GameObject:
@@ -93,3 +100,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d47e0981bccdc114b8fd64969fcddb81, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &2730494737688254627
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7968320754780665983}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0342fb9fb9cfad941848a5793197123f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  range: 20
+  enemyLayerName: Enemy

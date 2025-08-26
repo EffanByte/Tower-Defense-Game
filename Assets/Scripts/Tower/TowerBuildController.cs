@@ -43,7 +43,6 @@ public class TowerBuildController : MonoBehaviour
         clickAction.Enable();
         pointerAction.Enable();
 
-        Debug.Log($"[TowerBuildController] Enabled. buildableMask={buildableMask.value}");
     }
 
     void OnDisable()
@@ -59,7 +58,6 @@ public class TowerBuildController : MonoBehaviour
         if (idx >= 0 && idx < towerPrefabs.Length && towerPrefabs[idx] != null)
         {
             selected = idx;
-            Debug.Log($"[TowerBuildController] UI selected {idx + 1}: {towerPrefabs[idx].name}");
         }
         else
         {
@@ -123,7 +121,6 @@ public class TowerBuildController : MonoBehaviour
         if (level)
         {
             canPlace = level.CanPlace(logical, footprint, minManhattanFromRoad);
-            Debug.Log($"[TowerBuildController] CanPlace({logical}, footprint={footprint}, minRoad={minManhattanFromRoad}) => {canPlace}");
         }
 
         if (!canPlace) return;
@@ -136,7 +133,6 @@ public class TowerBuildController : MonoBehaviour
         spawn.y = placeY;
 
         Instantiate(prefab, spawn, Quaternion.identity);
-        Debug.Log($"[TowerBuildController] Spawned '{prefab.name}' at {spawn} (cell {cell}, logical {logical})");
 
         if (level) level.SetOccupied(logical, footprint, true);
     }
