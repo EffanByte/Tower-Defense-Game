@@ -95,5 +95,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   range: 8
   enemyLayerName: Enemy
-  fireCooldown: 1.25
+  fireCooldown: 1.5
   fireTimer: 0

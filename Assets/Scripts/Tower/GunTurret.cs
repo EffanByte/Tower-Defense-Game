@@ -4,26 +4,34 @@ public class GunTurret : MonoBehaviour
 {
     [Header("Gun setup")]
     private Transform gun; // assign in inspector, or defaults to child 1
+    private Vector3 gunDefaultLocalPos;
 
     [Header("Targeting")]
     [SerializeField] private float range = 8f;
     public string enemyLayerName = "Enemy";
 
     [Header("Firing")]
-    [Tooltip("Seconds between shots (default 1.5s.")]
+    [Tooltip("Seconds between shots (default 1.5s).")]
     [SerializeField] public float fireCooldown = 1.5f;
+
+    [Header("Recoil")]
+    [SerializeField] private float recoilDistance = 0.2f;   // how far back the gun jumps
+    private float recoilReturnSpeed; // how quickly it returns
 
     private int enemyLayer;
     public float fireTimer = 0f;
+    private float recoilAmount = 0f; // how much recoil is currently applied
 
     void Awake()
     {
         if (!gun && transform.childCount > 1)
             gun = transform.GetChild(1);
+        if (gun) gunDefaultLocalPos = gun.localPosition;
 
         enemyLayer = LayerMask.NameToLayer(enemyLayerName);
         if (enemyLayer < 0)
             Debug.LogError($"Layer '{enemyLayerName}' not found! Add it in Unity's Layer settings.");
+        recoilReturnSpeed = fireCooldown;
     }
 
     void Update()
@@ -48,7 +56,15 @@ public class GunTurret : MonoBehaviour
         else
         {
             fireTimer = 0f;
-            gun.transform.Rotate(0, 90 * Time.deltaTime, 0); // Rotating Turret
+        // Apply standard rotation later with more coherent code
+        //    gun.transform.Rotate(0, 90 * Time.deltaTime, 0);
+        }
+
+        // Smoothly return from recoil
+        if (gun)
+        {
+            recoilAmount = Mathf.MoveTowards(recoilAmount, 0f, recoilReturnSpeed * Time.deltaTime);
+            gun.localPosition = gunDefaultLocalPos + gun.localRotation * Vector3.back * recoilAmount;
         }
     }
 
@@ -74,6 +90,9 @@ public class GunTurret : MonoBehaviour
 
     void Shoot(Transform target)
     {
+        // Apply recoil instantly
+        recoilAmount = recoilDistance;
+
         var agent = target.GetComponent<EnemyPathAgent>();
         if (agent != null)
         {
@@ -96,7 +115,6 @@ public class GunTurret : MonoBehaviour
         }
     }
 
-    // Draw turret radius in editor
     void OnDrawGizmosSelected()
     {
         Gizmos.color = Color.red;
