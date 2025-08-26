@@ -10,11 +10,11 @@ public class GunTurret : MonoBehaviour
     public string enemyLayerName = "Enemy";
 
     [Header("Firing")]
-    [Tooltip("Seconds between shots (default 1.25s.")]
-    public float fireCooldown = 1.25f;
+    [Tooltip("Seconds between shots (default 1.5s.")]
+    [SerializeField] public float fireCooldown = 1.5f;
 
     private int enemyLayer;
-    private float fireTimer = 0f;
+    public float fireTimer = 0f;
 
     void Awake()
     {
@@ -47,8 +47,8 @@ public class GunTurret : MonoBehaviour
         }
         else
         {
-            // reset timer when no enemies (optional)
             fireTimer = 0f;
+            gun.transform.Rotate(0, 90 * Time.deltaTime, 0); // Rotating Turret
         }
     }
 
@@ -74,9 +74,26 @@ public class GunTurret : MonoBehaviour
 
     void Shoot(Transform target)
     {
-        // For now: immediately destroy the enemy
-        Debug.Log($"[Turret] Destroyed {target.name}");
-        Destroy(target.gameObject);
+        var agent = target.GetComponent<EnemyPathAgent>();
+        if (agent != null)
+        {
+            var manager = agent.GetComponentInParent<EnemySpawner>();
+            if (manager != null)
+            {
+                manager.NotifyEnemyKilled(agent);
+                Debug.Log($"[Turret] Shot {target.name} → notified {manager.name}");
+            }
+            else
+            {
+                Debug.LogWarning($"[Turret] No EnemyManager found for {target.name}, destroying directly.");
+                Destroy(agent.gameObject);
+            }
+        }
+        else
+        {
+            Debug.LogWarning($"[Turret] Target {target.name} has no EnemyPathAgent, destroying directly.");
+            Destroy(target.gameObject);
+        }
     }
 
     // Draw turret radius in editor
