@@ -107,7 +107,7 @@ MonoBehaviour:
   range: 8
   enemyLayerName: Enemy
   fireCooldown: 1.5
-  recoilDistance: 1.5
+  recoilDistance: 0.5
   fireTimer: 0
 --- !u!114 &-6886888559176006001
 MonoBehaviour:

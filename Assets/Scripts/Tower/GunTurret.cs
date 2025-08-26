@@ -84,6 +84,8 @@ public class GunTurret : MonoBehaviour
 
     void Shoot(Transform target)
     {
+        recoilAmount = recoilDistance;
+        
         var agent = target.GetComponent<EnemyPathAgent>();
         if (agent != null)
         {
