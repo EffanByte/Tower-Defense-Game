@@ -1,143 +1,107 @@
-// TowerBuildController.cs (UI-selectable version)
 using UnityEngine;
-using UnityEngine.InputSystem;
-using UnityEngine.EventSystems;
 using UnityEngine.Tilemaps;
 
-public class BuildingController : MonoBehaviour
+public class TowerBuildController : MonoBehaviour
 {
-    [Header("Refs")]
-    public Camera cam;                         // if null, uses Camera.main
-    public Tilemap buildableTilemap;           // used for WorldToCell + cell center
-    public TDLevel level;                      // optional: for CanPlace/SetOccupied
-
-    [Header("Towers (UI will call SelectByUI)")]
-    public GameObject[] towerPrefabs = new GameObject[4];
-
-    [Header("3D Raycast")]
-    public LayerMask buildableMask;            // include your Buildable layer
-    public float maxRayDistance = 500f;
+    [Header("Wire up in Inspector")]
+    [SerializeField] private InputRouter inputRouter;
+    [SerializeField] private Camera cam;
+    [SerializeField] private Tilemap buildableTilemap; // fallback
+    [SerializeField] private TDLevel level;
+    [SerializeField] private GameObject[] towerPrefabs;
 
     [Header("Placement")]
-    public float placeY = 0.1f;
-    public Vector2Int footprint = new Vector2Int(1, 1);
-    public int minManhattanFromRoad = 0;
+    [SerializeField] private float placeY = 0.1f;
+    [SerializeField] private Vector2Int footprint = new Vector2Int(1, 1);
+    [SerializeField] private bool tileYInvertedForTDLevel = false;
+    [SerializeField] private int minManhattanFromRoad = 0;
 
-    [Header("TDLevel mapping")]
-    public bool tileYInvertedForTDLevel = true; // true if CSV painted to (x, -y)
-
-    // Input System (click + pointer only)
-    private InputAction clickAction;           // <Mouse>/leftButton
-    private InputAction pointerAction;         // <Pointer>/position
-
-    private int selected = -1;                 // set by UI
+    public int selected = -1; // set from UI (1-4 etc.)
 
     void OnEnable()
     {
-        if (!cam) cam = Camera.main;
-
-        clickAction = new InputAction("Click", InputActionType.Button, "<Mouse>/leftButton");
-        pointerAction = new InputAction("Pointer", InputActionType.PassThrough, "<Pointer>/position");
-        clickAction.performed += OnClick;
-
-        clickAction.Enable();
-        pointerAction.Enable();
-
+        if (inputRouter != null)
+            inputRouter.OnBuildableTileClicked += HandleBuildableTileClicked;
     }
 
     void OnDisable()
     {
-        clickAction?.Disable();
-        pointerAction?.Disable();
+        if (inputRouter != null)
+            inputRouter.OnBuildableTileClicked -= HandleBuildableTileClicked;
     }
 
-    // -------- UI hooks --------
-    // Call this from your UI Button's OnClick with argument 0..3
-    public void SelectByUI(int idx)
+    private void HandleBuildableTileClicked(RaycastHit hit, Tilemap tm, Vector3Int cell)
     {
-        if (idx >= 0 && idx < towerPrefabs.Length && towerPrefabs[idx] != null)
-        {
-            selected = idx;
-        }
-        else
-        {
-            selected = -1;
-            Debug.Log($"[TowerBuildController] UI selection {idx + 1} invalid (no prefab).");
-        }
-    }
+        Debug.Log($"[TowerBuildController] Tile click received: tm='{tm.name}', cell={cell}");
 
-    // Optional: let a "Cancel" button call this
-    public void ClearSelection()
-    {
-        selected = -1;
-        Debug.Log("[TowerBuildController] Selection cleared.");
-    }
-
-    // -------- World click -> place --------
-    private void OnClick(InputAction.CallbackContext _)
-    {
-        // Ignore if pointer is over UI
-        if (EventSystem.current != null && EventSystem.current.IsPointerOverGameObject())
-            return;
-
-        if (!cam) { Debug.Log("[TowerBuildController] Click ignored: no camera."); return; }
-
-        Vector2 screen = pointerAction.ReadValue<Vector2>();
-        Ray ray = cam.ScreenPointToRay(screen);
-
-        if (!Physics.Raycast(ray, out var hit, maxRayDistance, buildableMask, QueryTriggerInteraction.Ignore))
-        {
-            Debug.Log("[TowerBuildController] Raycast MISS on Buildable mask.");
-            return;
-        }
-
-        // Get tilemap
-        Tilemap tm = hit.collider ? hit.collider.GetComponentInParent<Tilemap>() : null;
-        if (!tm) tm = buildableTilemap;
-        if (!tm)
-        {
-            Debug.Log($"[TowerBuildController] Hit '{hit.collider?.name ?? "<null>"}' but no Tilemap found. Assign buildableTilemap.");
-            return;
-        }
-
-        // World -> cell
-        Vector3 nudged = hit.point - hit.normal * 0.001f;
-        Vector3Int cell = tm.WorldToCell(nudged);
-
+        // 1) Make sure this tile exists
         if (!tm.HasTile(cell))
         {
-            Debug.Log($"[TowerBuildController] No tile at cell {cell} → not placeable.");
+            Debug.Log($"[TowerBuildController] No tile at {cell} → not placeable.");
             return;
         }
 
-        // Convert to TD grid coords
+        // 2) Convert to logical coords for TDLevel checks
         Vector2Int logical = new Vector2Int(cell.x, tileYInvertedForTDLevel ? -cell.y : cell.y);
-
-        bool canPlace = true;
-        if (level)
-            canPlace = level.CanPlace(logical, footprint, minManhattanFromRoad);
-
+        bool canPlace = level ? level.CanPlace(logical, footprint, minManhattanFromRoad) : true;
+        Debug.Log($"[TowerBuildController] CanPlace(logical={logical}, footprint={footprint}) => {canPlace}");
         if (!canPlace) return;
 
-        // Placement position (unchanged)
-        Vector3 spawn = tm.GetCellCenterWorld(cell) + new Vector3(-0.5f, 0, 0);
+        // 3) Compute spawn position (UNCHANGED from your logic)
+        Vector3 spawn = tm.GetCellCenterWorld(cell) + new Vector3(-0.5f, 0f, 0f);
         spawn.y = placeY;
+        Debug.Log($"[TowerBuildController] Spawn world {spawn:F3} (center={tm.GetCellCenterWorld(cell):F3} + [-0.5,0,0])");
 
-        int towerLayerMask = LayerMask.GetMask("Tower");
-
-        // --- Only now check if a tower is selected ---
-        if (selected < 0)
+        // 4) Occupancy check using Tower layer overlap
+        int towerMask = LayerMask.GetMask("Tower");
+        if (towerMask == 0) Debug.LogWarning("[TowerBuildController] 'Tower' layer mask is 0. Did you create the layer and put tower prefabs on it?");
+        float checkRadius = Mathf.Max(tm.cellSize.x, tm.cellSize.y) * 0.35f;
+        var overlaps = Physics.OverlapSphere(spawn, checkRadius, towerMask, QueryTriggerInteraction.Collide);
+        Debug.Log($"[TowerBuildController] OverlapSphere r={checkRadius:F2} on 'Tower' → {overlaps.Length} hit(s).");
+        if (overlaps.Length > 0)
         {
-            Debug.Log("[TowerBuildController] Click ignored: no tower selected.");
+            var td = overlaps[0].GetComponentInParent<TowerDetail>();
+            if (td) Debug.Log($"[TowerBuildController] Occupied by '{td.towerName}' L{td.Level} (kills {td.Kills}).");
+            else Debug.Log($"[TowerBuildController] Occupied by '{overlaps[0].name}' (no TowerDetail).");
+            selected = -1; // clear queued placement on occupied cell
+            Debug.Log("[TowerBuildController] Occupied → selection cleared; not placing.");
             return;
         }
 
-        // Place
-        var prefab = towerPrefabs[selected];
-        if (!prefab) { Debug.Log("[TowerBuildController] Selected prefab is null."); return; }
+        // 5) Only now require a selection
+        if (selected < 0)
+        {
+            Debug.Log("[TowerBuildController] Empty cell clicked but no tower selected → no placement.");
+            return;
+        }
 
-        Instantiate(prefab, spawn, Quaternion.identity);
+        // 6) Place the tower
+        var prefab = (selected >= 0 && selected < towerPrefabs.Length) ? towerPrefabs[selected] : null;
+        if (!prefab) { Debug.LogError($"[TowerBuildController] Selected index {selected} has no prefab."); return; }
+
+        var instance = Instantiate(prefab, spawn, Quaternion.identity);
+        Debug.Log($"[TowerBuildController] Placed '{prefab.name}' at {spawn:F3} (cell {cell}, logical {logical}).");
+
         selected = -1; // clear selection after place
-        if (level) level.SetOccupied(logical, footprint, true);
+        if (level)
+        {
+            level.SetOccupied(logical, footprint, true);
+            Debug.Log($"[TowerBuildController] Marked logical {logical} as Occupied.");
+        }
     }
+
+    public void SelectTower(int index)
+    {
+        if (index < 0 || index >= towerPrefabs.Length)
+        {
+            Debug.LogWarning($"[TowerBuildController] Invalid tower index {index}");
+            selected = -1;
+            return;
+        }
+
+        selected = index;
+        Debug.Log($"[TowerBuildController] Tower {towerPrefabs[index].name} selected.");
+    }
+
+
 }
