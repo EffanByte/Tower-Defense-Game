@@ -10,6 +10,7 @@ public class InputRouter : MonoBehaviour
 
     [Header("Masks")]
     [SerializeField] private LayerMask buildableMask;
+    [SerializeField] private LayerMask towerMask;
     [SerializeField] private float maxRayDistance = 200f;
 
     [Header("Input (assign refs or leave blank)")]
@@ -18,16 +19,18 @@ public class InputRouter : MonoBehaviour
     [Tooltip("Optional: Action Reference to your click action")]
     [SerializeField] private InputActionReference clickRef;
 
-    // if you don't use refs, you can keep these serialized or let the script create fallbacks
+    // If you don't use refs, you can keep these serialized or let the script create fallbacks
     public InputAction pointerAction; // "<Pointer>/position"
     public InputAction clickAction;   // "<Mouse>/leftButton"
 
+    // Events that other scripts subscribe to
+    public System.Action OnUIClicked;
+    public System.Action<GameObject> OnTowerClicked;
     public System.Action<RaycastHit, Tilemap, Vector3Int> OnBuildableTileClicked;
 
     void Awake()
     {
         if (!cam) cam = Camera.main;
-        Debug.Log($"[InputRouter] Awake. cam={(cam ? cam.name : "<null>")} buildableMask={buildableMask.value}");
 
         // Wire actions from references if provided
         if (pointerRef != null && pointerRef.action != null) pointerAction = pointerRef.action;
@@ -35,35 +38,20 @@ public class InputRouter : MonoBehaviour
 
         // Create sensible fallbacks if still missing
         if (pointerAction == null)
-        {
             pointerAction = new InputAction("PointerPos", InputActionType.Value, "<Pointer>/position");
-            Debug.Log("[InputRouter] Created fallback pointerAction '<Pointer>/position'.");
-        }
         if (clickAction == null)
-        {
             clickAction = new InputAction("Click", InputActionType.Button, "<Mouse>/leftButton");
-            Debug.Log("[InputRouter] Created fallback clickAction '<Mouse>/leftButton'.");
-        }
     }
 
     void OnEnable()
     {
-        Debug.Log("[InputRouter] OnEnable → enabling actions and subscribing.");
-        try
-        {
-            pointerAction.Enable();
-            clickAction.Enable();
-            clickAction.performed += HandleClick;
-        }
-        catch (System.Exception e)
-        {
-            Debug.LogError($"[InputRouter] Failed to enable actions: {e}");
-        }
+        pointerAction.Enable();
+        clickAction.Enable();
+        clickAction.performed += HandleClick;
     }
 
     void OnDisable()
     {
-        Debug.Log("[InputRouter] OnDisable → unsubscribing and disabling actions.");
         clickAction.performed -= HandleClick;
         pointerAction.Disable();
         clickAction.Disable();
@@ -71,60 +59,67 @@ public class InputRouter : MonoBehaviour
 
     void HandleClick(InputAction.CallbackContext ctx)
     {
-        Debug.Log($"[InputRouter] HandleClick(performed). time={Time.time:F3}");
-
         // 0) UI consumes clicks?
         if (EventSystem.current != null && EventSystem.current.IsPointerOverGameObject())
         {
-            Debug.Log("[InputRouter] UI raycast hit → routing to UI only, ignoring world.");
+            Debug.Log("[InputRouter] UI clicked.");
+            OnUIClicked?.Invoke();
             return;
         }
 
         if (!cam)
         {
-            Debug.LogError("[InputRouter] No camera set; cannot raycast.");
+            Debug.LogWarning("[InputRouter] No camera found for click raycast.");
             return;
         }
 
-        Vector2 screen = Vector2.zero;
-        if (pointerAction.enabled)
-            screen = pointerAction.ReadValue<Vector2>();
-        else if (Mouse.current != null)
-            screen = Mouse.current.position.ReadValue();
+        Vector2 screen = pointerAction.enabled
+            ? pointerAction.ReadValue<Vector2>()
+            : (Mouse.current != null ? Mouse.current.position.ReadValue() : Vector2.zero);
 
-        Debug.Log($"[InputRouter] Screen pos {screen}");
+        Ray ray = cam.ScreenPointToRay(screen);
+        Debug.DrawRay(ray.origin, ray.direction * maxRayDistance, Color.red, 1f);
 
-        var ray = cam.ScreenPointToRay(screen);
-        Debug.Log($"[InputRouter] Ray origin={ray.origin:F3} dir={ray.direction:F3} mask={buildableMask.value}");
-
-        // Raycast against Buildable
-        if (!Physics.Raycast(ray, out var hit, maxRayDistance, buildableMask, QueryTriggerInteraction.Ignore))
+        // Cast against everything
+        var hits = Physics.RaycastAll(ray, maxRayDistance, ~0, QueryTriggerInteraction.Collide);
+        if (hits.Length == 0)
         {
-            Debug.Log("[InputRouter] No Buildable hit.");
+            Debug.Log("[InputRouter] Click hit nothing.");
             return;
         }
 
-        var tm = hit.collider ? hit.collider.GetComponentInParent<Tilemap>() : null;
-        if (!tm)
+        // Sort by distance so closest is first
+        System.Array.Sort(hits, (a, b) => a.distance.CompareTo(b.distance));
+
+        // Look for towers first
+        foreach (var h in hits)
         {
-            Debug.LogWarning($"[InputRouter] Hit '{hit.collider?.name ?? "<null>"}' but no Tilemap on parent.");
-            return;
+            if (((1 << h.collider.gameObject.layer) & towerMask) != 0)
+            {
+                Debug.Log($"[InputRouter] Tower clicked: {h.collider.name}");
+                OnTowerClicked?.Invoke(h.collider.gameObject);
+                return;
+            }
         }
 
-        // nudge inward to avoid edge ambiguity
-        var nudged = hit.point - hit.normal * 0.001f;
-        Vector3Int cell = tm.WorldToCell(nudged);
-        Debug.Log($"[InputRouter] Buildable HIT '{tm.name}' at world={hit.point:F3}, cell={cell}, tile={(tm.HasTile(cell) ? (tm.GetTile(cell)?.name ?? "<tile>") : "<none>")}");
+        // Then buildable tiles
+        foreach (var h in hits)
+        {
+            if (((1 << h.collider.gameObject.layer) & buildableMask) != 0)
+            {
+                var tm = h.collider.GetComponentInParent<Tilemap>();
+                if (tm != null)
+                {
+                    var nudged = h.point - h.normal * 0.001f;
+                    Vector3Int cell = tm.WorldToCell(nudged);
+                    Debug.Log($"[InputRouter] Buildable tile clicked at cell {cell}");
+                    OnBuildableTileClicked?.Invoke(h, tm, cell);
+                    return;
+                }
+            }
+        }
 
-        OnBuildableTileClicked?.Invoke(hit, tm, cell);
+        Debug.Log("[InputRouter] Click did not hit tower or buildable.");
     }
 
-    // Safety net: if your actions never fire, this will still log a click so you see *something*
-    void Update()
-    {
-        if (Mouse.current != null && Mouse.current.leftButton.wasPressedThisFrame)
-        {
-            Debug.Log("[InputRouter] (Fallback) Mouse leftButton pressed this frame.");
-        }
-    }
 }

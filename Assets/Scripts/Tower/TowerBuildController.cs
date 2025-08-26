@@ -32,7 +32,6 @@ public class TowerBuildController : MonoBehaviour
 
     private void HandleBuildableTileClicked(RaycastHit hit, Tilemap tm, Vector3Int cell)
     {
-        Debug.Log($"[TowerBuildController] Tile click received: tm='{tm.name}', cell={cell}");
 
         // 1) Make sure this tile exists
         if (!tm.HasTile(cell))
@@ -44,27 +43,20 @@ public class TowerBuildController : MonoBehaviour
         // 2) Convert to logical coords for TDLevel checks
         Vector2Int logical = new Vector2Int(cell.x, tileYInvertedForTDLevel ? -cell.y : cell.y);
         bool canPlace = level ? level.CanPlace(logical, footprint, minManhattanFromRoad) : true;
-        Debug.Log($"[TowerBuildController] CanPlace(logical={logical}, footprint={footprint}) => {canPlace}");
         if (!canPlace) return;
 
-        // 3) Compute spawn position (UNCHANGED from your logic)
+        // 3) Compute spawn position
         Vector3 spawn = tm.GetCellCenterWorld(cell) + new Vector3(-0.5f, 0f, 0f);
         spawn.y = placeY;
-        Debug.Log($"[TowerBuildController] Spawn world {spawn:F3} (center={tm.GetCellCenterWorld(cell):F3} + [-0.5,0,0])");
 
         // 4) Occupancy check using Tower layer overlap
         int towerMask = LayerMask.GetMask("Tower");
-        if (towerMask == 0) Debug.LogWarning("[TowerBuildController] 'Tower' layer mask is 0. Did you create the layer and put tower prefabs on it?");
+        if (towerMask == 0) Debug.LogWarning("[TowerBuildController] 'Tower' layer mask is 0.");
         float checkRadius = Mathf.Max(tm.cellSize.x, tm.cellSize.y) * 0.35f;
         var overlaps = Physics.OverlapSphere(spawn, checkRadius, towerMask, QueryTriggerInteraction.Collide);
-        Debug.Log($"[TowerBuildController] OverlapSphere r={checkRadius:F2} on 'Tower' → {overlaps.Length} hit(s).");
         if (overlaps.Length > 0)
         {
-            var td = overlaps[0].GetComponentInParent<TowerDetail>();
-            if (td) Debug.Log($"[TowerBuildController] Occupied by '{td.towerName}' L{td.Level} (kills {td.Kills}).");
-            else Debug.Log($"[TowerBuildController] Occupied by '{overlaps[0].name}' (no TowerDetail).");
             selected = -1; // clear queued placement on occupied cell
-            Debug.Log("[TowerBuildController] Occupied → selection cleared; not placing.");
             return;
         }
 
@@ -77,10 +69,10 @@ public class TowerBuildController : MonoBehaviour
 
         // 6) Place the tower
         var prefab = (selected >= 0 && selected < towerPrefabs.Length) ? towerPrefabs[selected] : null;
-        if (!prefab) { Debug.LogError($"[TowerBuildController] Selected index {selected} has no prefab."); return; }
+        if (!prefab)
+            return;
 
-        var instance = Instantiate(prefab, spawn, Quaternion.identity);
-        Debug.Log($"[TowerBuildController] Placed '{prefab.name}' at {spawn:F3} (cell {cell}, logical {logical}).");
+        Instantiate(prefab, spawn, Quaternion.identity);
 
         selected = -1; // clear selection after place
         if (level)
@@ -100,8 +92,6 @@ public class TowerBuildController : MonoBehaviour
         }
 
         selected = index;
-        Debug.Log($"[TowerBuildController] Tower {towerPrefabs[index].name} selected.");
     }
-
-
+    
 }

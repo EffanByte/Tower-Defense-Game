@@ -60,6 +60,7 @@
     <Compile Include="Assets\Scripts\Tower\GunTurret.cs" />
     <Compile Include="Assets\Scripts\Tower\TowerUpgrade.cs" />
     <Compile Include="Assets\Scripts\Tower\RotateTower.cs" />
+    <Compile Include="Assets\Scripts\Tower\TowerInfoController.cs" />
     <Compile Include="Assets\Scripts\Level\TDLevel.cs" />
     <Compile Include="Assets\Scripts\Enemy\EnemyHealthBarUI.cs" />
     <Compile Include="Assets\Scripts\Tower\UltimateOPTower.cs" />
