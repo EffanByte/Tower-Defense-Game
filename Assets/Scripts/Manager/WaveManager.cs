@@ -1,13 +1,12 @@
 using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 
 public class WaveManager : MonoBehaviour
 {
     [Header("Lanes / Spawners")]
     [Tooltip("One EnemyManager per lane. Index here should match each manager's spawnerIndex.")]
-    public EnemyManager[] lanes;
+    public EnemySpawner[] lanes;
 
     [Header("Enemy Prefabs + default speeds")]
     [SerializeField] private GameObject gruntPrefab;
