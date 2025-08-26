@@ -1440,11 +1440,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   level: {fileID: 1227360445}
   spawnerIndex: 0
-  enemyPrefab: {fileID: 1697036390505262078, guid: cd160e3e4b276ce44a482adcc2e73b72, type: 3}
-  spawnInterval: 1
-  countPerWave: 10
-  enemySpeed: 6.9
-  enemyY: 0.1
   leakDamage: 1
 --- !u!4 &436284592
 Transform:
@@ -2607,13 +2602,13 @@ MonoBehaviour:
   lanes:
   - {fileID: 436284591}
   gruntPrefab: {fileID: 8867780394269398248, guid: 8ba2a2ea62d9d584c8e2e33d17091c28, type: 3}
-  gruntSpeed: 3
+  gruntSpeed: 2.5
   heavyPrefab: {fileID: 8765571584304440276, guid: 054a6c848dfb5ab48bc9e7fee8530963, type: 3}
-  heavySpeed: 2
-  stealthPrefab: {fileID: 0}
-  stealthSpeed: 3.3
-  bossPrefab: {fileID: 0}
-  bossSpeed: 2.6
+  heavySpeed: 1.5
+  stealthPrefab: {fileID: 3734807300307736157, guid: 449b0f098176b2e459ceb9a8b25f130b, type: 3}
+  stealthSpeed: 2
+  bossPrefab: {fileID: 3992579802716251714, guid: e0e0de11ef9e6eb43b8cfc9334becc5c, type: 3}
+  bossSpeed: 1
   enemyY: 0.1
   waves:
   - name: Wave 1
@@ -2622,13 +2617,25 @@ MonoBehaviour:
       kind: 0
       laneIndex: 0
       count: 10
-      interval: 0
+      interval: 2
       speedOverride: 0
     - label: Heavy
       kind: 1
       laneIndex: 0
       count: 5
       interval: 0.99
+      speedOverride: 0
+    - label: Stealth
+      kind: 2
+      laneIndex: 0
+      count: 5
+      interval: 0.99
+      speedOverride: 0
+    - label: Boss
+      kind: 3
+      laneIndex: 0
+      count: 2
+      interval: 4.16
       speedOverride: 0
     delayAfterWave: 0
   - name: 
@@ -2652,7 +2659,7 @@ Transform:
   m_GameObject: {fileID: 1662511612}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -51.14724, y: 45.578773, z: -23.92458}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []

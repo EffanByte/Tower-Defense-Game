@@ -6,14 +6,20 @@ public class GunTurret : MonoBehaviour
     private Transform gun; // assign in inspector, or defaults to child 1
 
     [Header("Targeting")]
-    public float range = 4f;
+    [SerializeField] private float range = 8f;
     public string enemyLayerName = "Enemy";
 
+    [Header("Firing")]
+    [Tooltip("Seconds between shots (default 1.25s.")]
+    public float fireCooldown = 1.25f;
+
     private int enemyLayer;
+    private float fireTimer = 0f;
 
     void Awake()
     {
-        gun = transform.GetChild(1); // hard-coded to 2nd child
+        if (!gun && transform.childCount > 1)
+            gun = transform.GetChild(1);
 
         enemyLayer = LayerMask.NameToLayer(enemyLayerName);
         if (enemyLayer < 0)
@@ -30,12 +36,24 @@ public class GunTurret : MonoBehaviour
             Vector3 dir = (target.position - gun.position).normalized;
             Quaternion lookRot = Quaternion.LookRotation(dir, Vector3.up);
             gun.rotation = Quaternion.Slerp(gun.rotation, lookRot, Time.deltaTime * 10f);
+
+            // Handle shooting cooldown
+            fireTimer -= Time.deltaTime;
+            if (fireTimer <= 0f)
+            {
+                Shoot(target);
+                fireTimer = fireCooldown; // reset cooldown
+            }
+        }
+        else
+        {
+            // reset timer when no enemies (optional)
+            fireTimer = 0f;
         }
     }
 
     Transform GetClosestEnemy()
     {
-        // Look only in Enemy layer
         Collider[] hits = Physics.OverlapSphere(transform.position, range, 1 << enemyLayer);
 
         float minDist = Mathf.Infinity;
@@ -50,8 +68,15 @@ public class GunTurret : MonoBehaviour
                 nearest = hit.transform;
             }
         }
-        Debug.Log("Nearest enemy: " + nearest);
+
         return nearest;
+    }
+
+    void Shoot(Transform target)
+    {
+        // For now: immediately destroy the enemy
+        Debug.Log($"[Turret] Destroyed {target.name}");
+        Destroy(target.gameObject);
     }
 
     // Draw turret radius in editor

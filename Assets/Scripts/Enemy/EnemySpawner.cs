@@ -7,14 +7,13 @@ public class EnemySpawner : MonoBehaviour
     public TDLevel level;
     [SerializeField] private int spawnerIndex = 0;
 
-    [Header("(Optional) legacy single wave")]
-    [SerializeField] private GameObject enemyPrefab;
-    [SerializeField] private float spawnInterval = 1.0f;
-    [SerializeField] private int countPerWave = 10;
+    private GameObject enemyPrefab;
+    private float spawnInterval = 1.0f;
+    private int countPerWave = 10;
 
     [Header("Motion defaults")]
-    [SerializeField] private float enemySpeed = 3.5f;
-    [SerializeField] private float enemyY = 0.1f;
+    private float enemySpeed = 3.5f;
+    private float enemyY = 0.1f;
 
     IReadOnlyList<Vector3> _waypoints;
 
@@ -48,7 +47,7 @@ public class EnemySpawner : MonoBehaviour
 
         for (int i = 0; i < count; i++)
         {
-            var go = Instantiate(prefab);
+            var go = Instantiate(prefab, this.transform);
             var anim = go.GetComponent<Animator>();
             if (anim)
             {
