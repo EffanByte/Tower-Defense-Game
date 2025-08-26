@@ -545,7 +545,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 655200101}
         m_TargetAssemblyTypeName: TowerBuildController, Assembly-CSharp
-        m_MethodName: SelectByUI
+        m_MethodName: SelectTower
         m_Mode: 3
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -1151,7 +1151,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 655200101}
         m_TargetAssemblyTypeName: TowerBuildController, Assembly-CSharp
-        m_MethodName: SelectByUI
+        m_MethodName: SelectTower
         m_Mode: 3
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -1283,7 +1283,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 655200101}
         m_TargetAssemblyTypeName: TowerBuildController, Assembly-CSharp
-        m_MethodName: SelectByUI
+        m_MethodName: SelectTower
         m_Mode: 3
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -2442,7 +2442,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 655200101}
         m_TargetAssemblyTypeName: TowerBuildController, Assembly-CSharp
-        m_MethodName: SelectByUI
+        m_MethodName: SelectTower
         m_Mode: 3
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -2960,6 +2960,9 @@ MonoBehaviour:
   buildableMask:
     serializedVersion: 2
     m_Bits: 64
+  towerMask:
+    serializedVersion: 2
+    m_Bits: 256
   maxRayDistance: 400.7
   pointerRef: {fileID: -3732266328251640637, guid: 29cbffa7580d62b41992795f8932f604, type: 3}
   clickRef: {fileID: 3011802187450807967, guid: 29cbffa7580d62b41992795f8932f604, type: 3}
@@ -2990,7 +2993,7 @@ Transform:
   m_GameObject: {fileID: 1705578892}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 25.843102, y: 0.5, z: -12.018754}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
