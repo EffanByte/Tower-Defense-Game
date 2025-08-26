@@ -60,13 +60,21 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: -3133498875991405556, guid: 7dc9b599eb9ab604cb7d608c543b2d6a, type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: -242165637326713887, guid: 7dc9b599eb9ab604cb7d608c543b2d6a, type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 7dc9b599eb9ab604cb7d608c543b2d6a, type: 3}
       propertyPath: m_Name
       value: Tower2
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 7dc9b599eb9ab604cb7d608c543b2d6a, type: 3}
       propertyPath: m_Layer
-      value: 7
+      value: 8
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -99,7 +107,7 @@ MonoBehaviour:
   range: 8
   enemyLayerName: Enemy
   fireCooldown: 1.5
-  recoilDistance: 0.2
+  recoilDistance: 1.5
   fireTimer: 0
 --- !u!114 &-6886888559176006001
 MonoBehaviour:

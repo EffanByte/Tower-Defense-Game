@@ -78,12 +78,8 @@ public class BuildingController : MonoBehaviour
     {
         // Ignore if pointer is over UI
         if (EventSystem.current != null && EventSystem.current.IsPointerOverGameObject())
-        {
-            // clicked a UI element
             return;
-        }
 
-        if (selected < 0) { Debug.Log("[TowerBuildController] Click ignored: no tower selected."); return; }
         if (!cam) { Debug.Log("[TowerBuildController] Click ignored: no camera."); return; }
 
         Vector2 screen = pointerAction.ReadValue<Vector2>();
@@ -119,18 +115,26 @@ public class BuildingController : MonoBehaviour
 
         bool canPlace = true;
         if (level)
-        {
             canPlace = level.CanPlace(logical, footprint, minManhattanFromRoad);
-        }
 
         if (!canPlace) return;
+
+        // Placement position (unchanged)
+        Vector3 spawn = tm.GetCellCenterWorld(cell) + new Vector3(-0.5f, 0, 0);
+        spawn.y = placeY;
+
+        int towerLayerMask = LayerMask.GetMask("Tower");
+
+        // --- Only now check if a tower is selected ---
+        if (selected < 0)
+        {
+            Debug.Log("[TowerBuildController] Click ignored: no tower selected.");
+            return;
+        }
 
         // Place
         var prefab = towerPrefabs[selected];
         if (!prefab) { Debug.Log("[TowerBuildController] Selected prefab is null."); return; }
-
-        Vector3 spawn = tm.GetCellCenterWorld(cell) + new Vector3(-0.5f,0,0); // Add vector so tower is centered
-        spawn.y = placeY;
 
         Instantiate(prefab, spawn, Quaternion.identity);
         selected = -1; // clear selection after place

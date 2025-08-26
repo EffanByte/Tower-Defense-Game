@@ -15,7 +15,7 @@ public class GunTurret : MonoBehaviour
     [SerializeField] public float fireCooldown = 1.5f;
 
     [Header("Recoil")]
-    [SerializeField] private float recoilDistance = 0.2f;   // how far back the gun jumps
+    [SerializeField] private float recoilDistance = 0.5f;   // how far back the gun jumps
     private float recoilReturnSpeed; // how quickly it returns
 
     private int enemyLayer;
@@ -52,12 +52,6 @@ public class GunTurret : MonoBehaviour
                 Shoot(target);
                 fireTimer = fireCooldown; // reset cooldown
             }
-        }
-        else
-        {
-            fireTimer = 0f;
-        // Apply standard rotation later with more coherent code
-        //    gun.transform.Rotate(0, 90 * Time.deltaTime, 0);
         }
 
         // Smoothly return from recoil
@@ -102,7 +96,6 @@ public class GunTurret : MonoBehaviour
                 var details = GetComponent<TowerDetail>();
                 if (details) details.AddKill();
 
-                Debug.Log($"[Turret] Shot {target.name} → notified {manager.name}");
             }
             else
             {

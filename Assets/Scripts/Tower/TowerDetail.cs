@@ -24,7 +24,6 @@ public class TowerDetail : MonoBehaviour
     {
         kills++;
         OnKillsChanged?.Invoke(kills);
-        Debug.Log($"[{towerName}] Kill count = {kills}");
     }
 
     /// <summary>
@@ -34,7 +33,6 @@ public class TowerDetail : MonoBehaviour
     {
         kills += Mathf.Max(0, count);
         OnKillsChanged?.Invoke(kills);
-        Debug.Log($"[{towerName}] Kill count = {kills}");
     }
 
     /// <summary>
@@ -47,13 +45,9 @@ public class TowerDetail : MonoBehaviour
         {
             level = newLevel;
             OnLevelChanged?.Invoke(level);
-            Debug.Log($"[{towerName}] Tower leveled up → {level}");
         }
     }
 
-    /// <summary>
-    /// Increase tower level by 1.
-    /// </summary>
     public void LevelUp()
     {
         SetLevel(level + 1);
