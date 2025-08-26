@@ -6,11 +6,11 @@ public class EnemyManager : MonoBehaviour
 {
     public TDLevel level;
     [SerializeField] private int spawnerIndex = 0;
+
+    [Header("(Optional) legacy single wave")]
     [SerializeField] private GameObject enemyPrefab;
     [SerializeField] private float spawnInterval = 1.0f;
     [SerializeField] private int countPerWave = 10;
-
-
 
     [Header("Motion defaults")]
     [SerializeField] private float enemySpeed = 3.5f;
@@ -19,50 +19,78 @@ public class EnemyManager : MonoBehaviour
     IReadOnlyList<Vector3> _waypoints;
 
     [Header("Leak settings")]
-    [Min(1)] public int leakDamage = 1;   // how much health to remove per escaped enemy
+    [Min(1)] public int leakDamage = 1;
+
+    // NEW: events so WaveManager can count active enemies
+    public event System.Action<EnemyPathAgent> EnemySpawned;
+    public event System.Action<EnemyPathAgent> EnemyRemoved;
 
     void Start()
     {
-        if (!level) { Debug.LogError("[EnemySpawner] TDLevel missing."); return; }
+        if (!level) { Debug.LogError("[EnemyManager] TDLevel missing."); return; }
         var wps = level.GetWaypoints(spawnerIndex);
-        if (wps == null || wps.Count == 0) { Debug.LogError("[EnemySpawner] No waypoints for spawner " + spawnerIndex); return; }
+        if (wps == null || wps.Count == 0) { Debug.LogError("[EnemyManager] No waypoints for spawner " + spawnerIndex); return; }
         _waypoints = wps;
-        if (_waypoints == null) return;
-        StartCoroutine(SpawnWave());
+
+        if (enemyPrefab)
+            StartCoroutine(SpawnBatchRoutine(enemyPrefab, countPerWave, spawnInterval, enemySpeed, enemyY));
     }
 
-    IEnumerator SpawnWave()
+    // NEW: public API for WaveManager
+    public Coroutine SpawnBatch(GameObject prefab, int count, float interval, float speed, float y)
     {
-        for (int i = 0; i < countPerWave; i++)
+        return StartCoroutine(SpawnBatchRoutine(prefab, count, interval, speed, y));
+    }
+
+    IEnumerator SpawnBatchRoutine(GameObject prefab, int count, float interval, float speed, float y)
+    {
+        if (_waypoints == null) yield break;
+
+        for (int i = 0; i < count; i++)
         {
-            var go = Instantiate(enemyPrefab);
+            var go = Instantiate(prefab);
+            var anim = go.GetComponent<Animator>();
+            if (anim)
+            {
+                // convention: 0 = walk, 1 = run
+                if (prefab.CompareTag("Light"))
+                    anim.SetInteger("MoveType", 1);   // running
+                else if (prefab.CompareTag("Heavy"))
+                    anim.SetInteger("MoveType", 0);   // walking
+            }
             var agent = go.GetComponent<EnemyPathAgent>();
             if (!agent) agent = go.AddComponent<EnemyPathAgent>();
-            agent.speed = enemySpeed;
-            agent.yFixed = enemyY;
+            
+            agent.speed = speed;
+            agent.yFixed = y;
             agent.Init(_waypoints);
+
+            // notify wave manager
+            EnemySpawned?.Invoke(agent);
 
             // handle end-of-path
             agent.OnReachedEnd += OnEnemyReachedEnd;
 
-            yield return new WaitForSeconds(spawnInterval);
+            yield return (interval > 0f) ? new WaitForSeconds(interval) : null;
         }
     }
 
     void OnEnemyReachedEnd(EnemyPathAgent agent)
     {
+        // Apply leak damage
         var hm = HealthManager.GetHealthManager();
-        if (hm != null)
-        {
-            hm.Damage(leakDamage);
-            Debug.Log($"[EnemyManager] Leak: -{leakDamage} HP → {hm.Current}/{hm.maxHealth}");
-        }
-        else
-        {
-            Debug.LogWarning("[EnemyManager] No HealthManager in scene.");
-        }
+        if (hm) hm.Damage(leakDamage);
+        else Debug.LogWarning("[EnemyManager] No HealthManager in scene.");
 
+        // notify removal and cleanup
+        EnemyRemoved?.Invoke(agent);
         Destroy(agent.gameObject);
     }
 
+    // (Optional) call this from your combat code when an enemy dies mid-path
+    public void NotifyEnemyKilled(EnemyPathAgent agent)
+    {
+        EnemyRemoved?.Invoke(agent);
+        if (agent) Destroy(agent.gameObject);
+    }
 }

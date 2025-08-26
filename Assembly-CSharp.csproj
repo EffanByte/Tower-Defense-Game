@@ -58,6 +58,7 @@
     <Compile Include="Assets\Scripts\Enemy\EnemyPathAgent.cs" />
     <Compile Include="Assets\_Addons\TutorialInfo\Scripts\Readme.cs" />
     <Compile Include="Assets\Scripts\Manager\WaveManager.cs" />
+    <Compile Include="Assets\Scripts\Enemy\EnemyAnimationBehavior.cs" />
     <Compile Include="Assets\Scripts\Manager\HealthManager.cs" />
   </ItemGroup>
   <ItemGroup>
