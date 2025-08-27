@@ -1,6 +1,6 @@
-using UnityEditor.Rendering.Universal;
+using System;
 using UnityEngine;
-public class TowerInfoController : MonoBehaviour
+public class TowerUpgradeController : MonoBehaviour
 {
     [SerializeField] private InputRouter inputRouter;
     [SerializeField] private GameObject infoUI;
@@ -33,11 +33,26 @@ public class TowerInfoController : MonoBehaviour
     void ToggleUI()
     {
         if (SelectedTower != null)
+        {
             infoUI.SetActive(true);
+            toggleRangeVisualizer();
+        }
         else
+        {
             infoUI.SetActive(false);
+            toggleRangeVisualizer();    
+        }
     }
 
+    void toggleRangeVisualizer()
+    {
+        if (SelectedTower != null)
+        {
+            var rv = SelectedTower.GetComponent<RangeVisualizer>();
+            if (rv != null)
+                rv.enabled = !rv.enabled;
+        }
+    }
     public void HandleUpgradeDamage()
     {
         SelectedTower.GetComponent<TowerUpgrade>().UpgradeDamage();
@@ -52,5 +67,6 @@ public class TowerInfoController : MonoBehaviour
     {
         SelectedTower.GetComponent<TowerUpgrade>().UpgradeRange();
     }
+
 
 }
