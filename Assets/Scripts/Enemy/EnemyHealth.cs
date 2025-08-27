@@ -13,6 +13,7 @@ public class EnemyHealth : MonoBehaviour
     public System.Action<EnemyHealth> OnDeath;
     public System.Action<EnemyHealth, int> OnDamaged; // (enemy, newHP)
     [SerializeField] private GameObject healthBarPrefab;
+    [SerializeField] private EnemyKind enemyType;
     private EnemyHealthUI healthUI;
     void Awake()
     {
@@ -43,10 +44,15 @@ public class EnemyHealth : MonoBehaviour
 
         if (currentHealth <= 0)
         {
+            // ---- Notify spawner (cleanup / path logic) ----
             if (manager != null && agent != null)
                 manager.NotifyEnemyKilled(agent);
             else
                 Destroy(gameObject);
+
+            // ---- Monetization reward ----
+            if (EconomyController.Instance != null)
+                EconomyController.Instance.RewardEnemy(enemyType);
 
             OnDeath?.Invoke(this);
         }

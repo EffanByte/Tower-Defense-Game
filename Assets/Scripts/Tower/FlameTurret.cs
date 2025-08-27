@@ -52,7 +52,6 @@ public class FlameTurret : MonoBehaviour
             if (health != null)
             {
                 health.TakeDamage(baseDamage, manager, agent);
-                Debug.Log($"[FlameTurret] Burned {hit.name} for {upgrade.CurrentDamage} dmg (HP left: {health.CurrentHealth})");
             }
         }
     }

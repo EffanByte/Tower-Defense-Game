@@ -1,7 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
 public class WaveManager : MonoBehaviour
 {
     [Header("Lanes / Spawners")]
@@ -10,19 +9,17 @@ public class WaveManager : MonoBehaviour
 
     [Header("Enemy Prefabs + default speeds")]
     [SerializeField] private GameObject gruntPrefab;
-    [SerializeField] private float gruntSpeed = 3.6f;  
+    [SerializeField] private float gruntSpeed = 3.6f;
     [SerializeField] GameObject heavyPrefab;
-    [SerializeField] private float heavySpeed = 2.2f;   
+    [SerializeField] private float heavySpeed = 2.2f;
     [SerializeField] private GameObject stealthPrefab;
-    [SerializeField] private float stealthSpeed = 3.3f; 
+    [SerializeField] private float stealthSpeed = 3.3f;
     [SerializeField] private GameObject bossPrefab;
-    [SerializeField] float bossSpeed = 2.6f;    
+    [SerializeField] float bossSpeed = 2.6f;
 
     [Header("Global placement")]
     [SerializeField] private float enemyY = 0.1f;
 
-    [System.Serializable]
-    public enum EnemyKind { Grunt, Heavy, Stealth, Boss }
 
     [System.Serializable]
     public class WaveEntry
@@ -102,7 +99,7 @@ public class WaveManager : MonoBehaviour
                 }
 
                 float useSpeed = (spawn.speedOverride > 0f) ? spawn.speedOverride : speed;
-                lanes[spawn.laneIndex].SpawnBatch(prefab, spawn.count, spawn.interval, useSpeed, enemyY);
+                lanes[spawn.laneIndex].SpawnBatch(prefab, spawn.count, spawn.interval, useSpeed, enemyY, spawn.kind);
             }
 
             // wait until all enemies are gone

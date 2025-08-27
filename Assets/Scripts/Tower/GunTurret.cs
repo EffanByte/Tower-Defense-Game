@@ -101,7 +101,6 @@ public class GunTurret : MonoBehaviour
         if (health != null)
         {
             health.TakeDamage(upgrade.CurrentDamage, manager, agent);
-            Debug.Log($"[GunTurret] Shot {target.name} for {upgrade.CurrentDamage} dmg (HP left: {health.CurrentHealth})");
         }
     }
 

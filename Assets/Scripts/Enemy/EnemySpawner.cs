@@ -8,6 +8,8 @@ public class EnemySpawner : MonoBehaviour
     [SerializeField] private int spawnerIndex = 0;
 
     private GameObject enemyPrefab;
+
+    private EnemyKind enemyName = EnemyKind.Grunt;
     private float spawnInterval = 1.0f;
     private int countPerWave = 10;
 
@@ -32,16 +34,16 @@ public class EnemySpawner : MonoBehaviour
         _waypoints = wps;
 
         if (enemyPrefab)
-            StartCoroutine(SpawnBatchRoutine(enemyPrefab, countPerWave, spawnInterval, enemySpeed, enemyY));
+            StartCoroutine(SpawnBatchRoutine(enemyPrefab, countPerWave, spawnInterval, enemySpeed, enemyY, enemyName));
     }
 
     // NEW: public API for WaveManager
-    public Coroutine SpawnBatch(GameObject prefab, int count, float interval, float speed, float y)
+    public Coroutine SpawnBatch(GameObject prefab, int count, float interval, float speed, float y, EnemyKind enemyName)
     {
-        return StartCoroutine(SpawnBatchRoutine(prefab, count, interval, speed, y));
+        return StartCoroutine(SpawnBatchRoutine(prefab, count, interval, speed, y, enemyName));
     }
 
-    IEnumerator SpawnBatchRoutine(GameObject prefab, int count, float interval, float speed, float y)
+    IEnumerator SpawnBatchRoutine(GameObject prefab, int count, float interval, float speed, float y, EnemyKind enemyType)
     {
         if (_waypoints == null) yield break;
 
