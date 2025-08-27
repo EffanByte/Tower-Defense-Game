@@ -75,6 +75,7 @@
     <Compile Include="Assets\Scripts\Manager\WaveManager.cs" />
     <Compile Include="Assets\Scripts\Enemy\EnemyAnimationBehavior.cs" />
     <Compile Include="Assets\Scripts\Manager\HealthManager.cs" />
+    <Compile Include="Assets\Scripts\Tower\FlameRing.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\_Addons\TextMesh Pro\Shaders\TMPro.cginc" />

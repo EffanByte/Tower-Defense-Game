@@ -12,6 +12,9 @@ public class FlameTurret : MonoBehaviour
     [SerializeField] private float baseCooldown = 1.5f;
     [SerializeField] private float baseRange = 4f;
 
+    [Header("Flame Ring")]
+    [SerializeField] private GameObject flameRingPrefab;
+    [SerializeField] private float flameRingLifetime = 1.5f;
     private int enemyLayer;
     private float fireTimer = 0f;
 
@@ -42,6 +45,14 @@ public class FlameTurret : MonoBehaviour
 
     void ShootAll()
     {
+        // Instantiate a flame ring effect at turret position
+        if (flameRingPrefab)
+        {
+            GameObject ring = Instantiate(flameRingPrefab, transform);
+            Destroy(ring, flameRingLifetime); // cleanup after animation
+        }
+
+        // (Optional: keep your instant damage, or rely on flame ring collisions instead)
         Collider[] hits = Physics.OverlapSphere(transform.position, upgrade.CurrentRange, 1 << enemyLayer);
         foreach (var hit in hits)
         {

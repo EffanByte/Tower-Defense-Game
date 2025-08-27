@@ -109,6 +109,8 @@ MonoBehaviour:
   baseDamage: 5
   baseCooldown: 1.5
   baseRange: 4
+  flameRingPrefab: {fileID: 3244409283299348201, guid: 1302d1a5c1118a64bb632338b22691d9, type: 3}
+  flameRingLifetime: 1.5
 --- !u!114 &-5172677282459037722
 MonoBehaviour:
   m_ObjectHideFlags: 0
