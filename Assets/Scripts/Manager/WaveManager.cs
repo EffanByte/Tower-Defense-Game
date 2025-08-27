@@ -47,6 +47,8 @@ public class WaveManager : MonoBehaviour
     int _waveIndex = -1;
     bool _running;
 
+    [Header("UI")]
+    public TMPro.TextMeshProUGUI waveLabel;
     void OnEnable()
     {
         foreach (var lane in lanes)
@@ -80,8 +82,8 @@ public class WaveManager : MonoBehaviour
         for (_waveIndex = 0; _waveIndex < waves.Count; _waveIndex++)
         {
             var wave = waves[_waveIndex];
-            Debug.Log($"[WaveManager] Starting Wave {_waveIndex + 1}: {wave.name}");
-
+            if (waveLabel)
+                waveLabel.text = $"Wave: {_waveIndex + 1}";
             // kick off all entries for this wave
             foreach (var spawn in wave.entries)
             {
