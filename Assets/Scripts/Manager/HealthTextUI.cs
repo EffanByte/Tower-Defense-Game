@@ -33,7 +33,6 @@ public class HealthTextUI : MonoBehaviour
         {
             hm.OnHealthChanged += UpdateLabel;
             subscribed = true;
-            Debug.Log("[HealthTextUI] Subscribed");
             UpdateLabel(hm.Current, hm.maxHealth);  // immediate draw
         }
         else
@@ -58,6 +57,5 @@ public class HealthTextUI : MonoBehaviour
             return;
         }
         label.text = $"{cur} / {max} HP";
-        Debug.Log("[HealthTextUI] Updated");
     }
 }

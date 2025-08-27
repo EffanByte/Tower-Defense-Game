@@ -49,7 +49,6 @@ public class EconomyController : MonoBehaviour
         if (currentMoney >= amount)
         {
             currentMoney -= amount;
-            Debug.Log($"[Monetization] -${amount}, total=${currentMoney}");
             OnMoneyChanged?.Invoke(currentMoney);
             return true;
         }
