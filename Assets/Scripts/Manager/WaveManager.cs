@@ -81,6 +81,8 @@ public class WaveManager : MonoBehaviour
 
         for (_waveIndex = 0; _waveIndex < waves.Count; _waveIndex++)
         {
+            CleanupDeadEnemies();
+            
             var wave = waves[_waveIndex];
             if (waveLabel)
                 waveLabel.text = $"Wave: {_waveIndex + 1}";
@@ -138,4 +140,16 @@ public class WaveManager : MonoBehaviour
     {
         _activeEnemies = Mathf.Max(0, _activeEnemies - 1);
     }
+
+    void CleanupDeadEnemies()
+    {
+        int deadLayer = LayerMask.NameToLayer("Dead");
+        var deadEnemies = GameObject.FindObjectsOfType<EnemyHealth>();
+        foreach (var enemy in deadEnemies)
+        {
+            if (enemy.gameObject.layer == deadLayer)
+                Destroy(enemy.gameObject);
+        }
+    }
+
 }

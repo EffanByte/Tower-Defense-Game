@@ -92,6 +92,5 @@ public class EnemySpawner : MonoBehaviour
     public void NotifyEnemyKilled(EnemyPathAgent agent)
     {
         EnemyRemoved?.Invoke(agent);
-        if (agent) Destroy(agent.gameObject);
     }
 }

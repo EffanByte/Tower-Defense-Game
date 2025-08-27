@@ -47,8 +47,15 @@ public class EnemyHealth : MonoBehaviour
             // ---- Notify spawner (cleanup / path logic) ----
             if (manager != null && agent != null)
                 manager.NotifyEnemyKilled(agent);
-            else
-                Destroy(gameObject);
+
+            // ---- Stop animation ----
+            GetComponent<Animator>().enabled = false;
+            GetComponent<EnemyPathAgent>().enabled = false;
+            // ---- Rotate to lay flat (90°) ----
+            transform.rotation = Quaternion.Euler(90f, 90f, 0f);
+
+            // ---- Change layer to Dead ----
+            gameObject.layer = LayerMask.NameToLayer("Dead");
 
             // ---- Monetization reward ----
             if (EconomyController.Instance != null)
@@ -57,4 +64,5 @@ public class EnemyHealth : MonoBehaviour
             OnDeath?.Invoke(this);
         }
     }
+
 }
