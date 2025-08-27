@@ -3876,47 +3876,23 @@ MonoBehaviour:
   bossPrefab: {fileID: 3992579802716251714, guid: e0e0de11ef9e6eb43b8cfc9334becc5c, type: 3}
   bossSpeed: 1
   enemyY: 0.1
-  waves:
-  - name: Wave 1
-    entries:
-    - label: Grunt
-      kind: 0
-      laneIndex: 0
-      count: 10
-      interval: 2
-      speedOverride: 0
-    - label: Heavy
-      kind: 1
-      laneIndex: 0
-      count: 5
-      interval: 0.99
-      speedOverride: 0
-    - label: Stealth
-      kind: 2
-      laneIndex: 0
-      count: 5
-      interval: 0.99
-      speedOverride: 0
-    - label: Boss
-      kind: 3
-      laneIndex: 0
-      count: 2
-      interval: 4.16
-      speedOverride: 0
-    delayAfterWave: 0
-  - name: 
-    entries: []
-    delayAfterWave: 0
-  - name: 
-    entries: []
-    delayAfterWave: 0
-  - name: 
-    entries: []
-    delayAfterWave: 0
-  - name: 
-    entries: []
-    delayAfterWave: 0
+  waves: []
   waveLabel: {fileID: 1975255196}
+  autoGenerateBeyondManual: 1
+  bossEvery: 5
+  baseGrunts: 15
+  gruntsPerWave: 5
+  baseHeavies: 0
+  heaviesPerWave: 2
+  heavyUnlockWave: 2
+  baseStealth: 0
+  stealthPer2Waves: 10
+  stealthUnlockWave: 5
+  autoBaseInterval: 0.8
+  autoIntervalFalloff: 0.04
+  autoMinInterval: 0.25
+  autoDelayAfterWave: 3
+  maxAutoWaves: 999
 --- !u!4 &1662511614
 Transform:
   m_ObjectHideFlags: 0
