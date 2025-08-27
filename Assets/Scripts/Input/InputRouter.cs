@@ -28,6 +28,8 @@ public class InputRouter : MonoBehaviour
     public System.Action<GameObject> OnTowerClicked;
     public System.Action<RaycastHit, Tilemap, Vector3Int> OnBuildableTileClicked;
 
+    public System.Action OnNonTowerClicked;
+
     void Awake()
     {
         if (!cam) cam = Camera.main;
@@ -59,6 +61,8 @@ public class InputRouter : MonoBehaviour
 
     void HandleClick(InputAction.CallbackContext ctx)
     {
+
+        
         // 0) UI consumes clicks?
         if (EventSystem.current != null && EventSystem.current.IsPointerOverGameObject())
         {
@@ -96,12 +100,13 @@ public class InputRouter : MonoBehaviour
         {
             if (((1 << h.collider.gameObject.layer) & towerMask) != 0)
             {
-                Debug.Log($"[InputRouter] Tower clicked: {h.collider.name}");
                 OnTowerClicked?.Invoke(h.collider.gameObject);
                 return;
             }
         }
 
+        OnNonTowerClicked?.Invoke();
+        
         // Then buildable tiles
         foreach (var h in hits)
         {
@@ -112,7 +117,6 @@ public class InputRouter : MonoBehaviour
                 {
                     var nudged = h.point - h.normal * 0.001f;
                     Vector3Int cell = tm.WorldToCell(nudged);
-                    Debug.Log($"[InputRouter] Buildable tile clicked at cell {cell}");
                     OnBuildableTileClicked?.Invoke(h, tm, cell);
                     return;
                 }

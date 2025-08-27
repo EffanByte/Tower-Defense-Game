@@ -92,4 +92,33 @@ public class TowerUpgrade : MonoBehaviour
         CurrentCooldown = cooldown / auraSpeedMult;
         CurrentRange = rng;
     }
+
+    public void UpgradeDamage()
+    {
+        damageLevel++;
+        RecalculateStats();
+        Debug.Log($"[TowerUpgrade] {gameObject.name} Damage upgraded → {CurrentDamage} (Lvl {damageLevel})");
+    }
+
+    public void UpgradeSpeed()
+    {
+        speedLevel++;
+        RecalculateStats();
+        Debug.Log($"[TowerUpgrade] {gameObject.name} Speed upgraded → {CurrentCooldown:F2}s cooldown (Lvl {speedLevel})");
+    }
+
+    public void UpgradeRange()
+    {
+        if (rangeLevel < MaxRangeLevel)
+        {
+            rangeLevel++;
+            RecalculateStats();
+            Debug.Log($"[TowerUpgrade] {gameObject.name} Range upgraded → {CurrentRange} (Lvl {rangeLevel})");
+        }
+        else
+        {
+            Debug.Log($"[TowerUpgrade] {gameObject.name} Range is already maxed at Lvl {MaxRangeLevel}.");
+        }
+    }
+    
 }

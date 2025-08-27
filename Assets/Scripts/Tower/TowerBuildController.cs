@@ -18,10 +18,13 @@ public class TowerBuildController : MonoBehaviour
 
     public int selected = -1; // set from UI (1-4 etc.)
 
+
     void OnEnable()
     {
         if (inputRouter != null)
+        {
             inputRouter.OnBuildableTileClicked += HandleBuildableTileClicked;
+        }
     }
 
     void OnDisable()
@@ -32,13 +35,12 @@ public class TowerBuildController : MonoBehaviour
 
     private void HandleBuildableTileClicked(RaycastHit hit, Tilemap tm, Vector3Int cell)
     {
-
         // 1) Make sure this tile exists
-        if (!tm.HasTile(cell))
-        {
-            Debug.Log($"[TowerBuildController] No tile at {cell} → not placeable.");
-            return;
-        }
+            if (!tm.HasTile(cell))
+            {
+                Debug.Log($"[TowerBuildController] No tile at {cell} → not placeable.");
+                return;
+            }
 
         // 2) Convert to logical coords for TDLevel checks
         Vector2Int logical = new Vector2Int(cell.x, tileYInvertedForTDLevel ? -cell.y : cell.y);
@@ -93,5 +95,4 @@ public class TowerBuildController : MonoBehaviour
 
         selected = index;
     }
-    
 }

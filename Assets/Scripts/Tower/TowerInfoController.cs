@@ -2,24 +2,39 @@ using UnityEngine;
 public class TowerInfoController : MonoBehaviour
 {
     [SerializeField] private InputRouter inputRouter;
+    [SerializeField] private GameObject infoUI;
 
+    public static GameObject SelectedTower;
     void OnEnable()
     {
-        inputRouter.OnTowerClicked += ShowTowerInfo;
+        inputRouter.OnTowerClicked += ShowUpgrade;
+        inputRouter.OnNonTowerClicked += HideUpgrade;
     }
 
     void OnDisable()
     {
-        inputRouter.OnTowerClicked -= ShowTowerInfo;
+        inputRouter.OnTowerClicked -= ShowUpgrade;
+        inputRouter.OnNonTowerClicked -= HideUpgrade;
     }
 
-    void ShowTowerInfo(GameObject tower)
+    void HideUpgrade()
+    {
+        SelectedTower = null;
+        ToggleUI();
+    }
+
+    void ShowUpgrade(GameObject tower)
     {
         var detail = tower.GetComponent<TowerDetail>();
-        if (detail)
-        {
-            Debug.Log($"Tower {detail.towerName} Lvl {detail.Level}, Kills {detail.Kills}");
-            // TODO: open UI panel
-        }
+        SelectedTower = tower;
+        ToggleUI();
+    }
+
+    void ToggleUI()
+    {
+        if (SelectedTower != null)
+            infoUI.SetActive(true);
+        else
+            infoUI.SetActive(false);
     }
 }
