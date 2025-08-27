@@ -73,8 +73,10 @@ public class TowerBuildController : MonoBehaviour
         var prefab = (selected >= 0 && selected < towerPrefabs.Length) ? towerPrefabs[selected] : null;
         if (!prefab)
             return;
-
+        
+        EconomyController.Instance.SpendMoneyForTower(selected);
         Instantiate(prefab, spawn, Quaternion.identity);
+
 
         selected = -1; // clear selection after place
         if (level)

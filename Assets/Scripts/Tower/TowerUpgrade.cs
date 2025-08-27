@@ -18,13 +18,17 @@ public class TowerUpgrade : MonoBehaviour
     public float smallSpeedStep = 0.05f;
     public int MaxRangeLevel = 3;
 
-    // Buffs applied from outside (e.g. OP tower aura)
     private float auraDamageMult = 1f;
     private float auraSpeedMult = 1f;
 
     public int CurrentDamage { get; private set; }
     public float CurrentCooldown { get; private set; }
     public float CurrentRange { get; private set; }
+
+    // ---- Costs (can be balanced later) ----
+    public int GetDamageUpgradeCost() => 50 + (damageLevel * 25);
+    public int GetSpeedUpgradeCost() => 50 + (speedLevel * 20);
+    public int GetRangeUpgradeCost() => 100 + (rangeLevel * 50);
 
     public void Init(int dmg, float cooldown, float range)
     {
@@ -52,6 +56,7 @@ public class TowerUpgrade : MonoBehaviour
 
         RecalculateStats();
     }
+
     public void SetAuraBuff(float damageMult, float speedMult)
     {
         auraDamageMult = damageMult;
@@ -68,7 +73,6 @@ public class TowerUpgrade : MonoBehaviour
 
     public void RecalculateStats()
     {
-        // --- base scaling ---
         int dmg;
         if (damageLevel <= 3)
             dmg = baseDamage + (damageLevel - 1) * damageStep;
@@ -87,38 +91,61 @@ public class TowerUpgrade : MonoBehaviour
         else
             rng = baseRange + (MaxRangeLevel - 1) * rangeStep;
 
-        // --- apply aura buffs ---
         CurrentDamage = Mathf.RoundToInt(dmg * auraDamageMult);
         CurrentCooldown = cooldown / auraSpeedMult;
         CurrentRange = rng;
     }
 
+    // ---- Upgrade methods with cost ----
+
     public void UpgradeDamage()
     {
-        damageLevel++;
-        RecalculateStats();
-        Debug.Log($"[TowerUpgrade] {gameObject.name} Damage upgraded → {CurrentDamage} (Lvl {damageLevel})");
+        int cost = GetDamageUpgradeCost();
+        if (EconomyController.Instance != null && EconomyController.Instance.SpendMoney(cost))
+        {
+            damageLevel++;
+            RecalculateStats();
+            Debug.Log($"[TowerUpgrade] {gameObject.name} Damage upgraded → {CurrentDamage} (Lvl {damageLevel}) for ${cost}");
+        }
+        else
+        {
+            Debug.Log("[TowerUpgrade] Not enough money to upgrade damage.");
+        }
     }
 
     public void UpgradeSpeed()
     {
-        speedLevel++;
-        RecalculateStats();
-        Debug.Log($"[TowerUpgrade] {gameObject.name} Speed upgraded → {CurrentCooldown:F2}s cooldown (Lvl {speedLevel})");
+        int cost = GetSpeedUpgradeCost();
+        if (EconomyController.Instance != null && EconomyController.Instance.SpendMoney(cost))
+        {
+            speedLevel++;
+            RecalculateStats();
+            Debug.Log($"[TowerUpgrade] {gameObject.name} Speed upgraded → {CurrentCooldown:F2}s cooldown (Lvl {speedLevel}) for ${cost}");
+        }
+        else
+        {
+            Debug.Log("[TowerUpgrade] Not enough money to upgrade speed.");
+        }
     }
 
     public void UpgradeRange()
     {
-        if (rangeLevel < MaxRangeLevel)
+        if (rangeLevel >= MaxRangeLevel)
+        {
+            Debug.Log($"[TowerUpgrade] {gameObject.name} Range is already maxed at Lvl {MaxRangeLevel}.");
+            return;
+        }
+
+        int cost = GetRangeUpgradeCost();
+        if (EconomyController.Instance != null && EconomyController.Instance.SpendMoney(cost))
         {
             rangeLevel++;
             RecalculateStats();
-            Debug.Log($"[TowerUpgrade] {gameObject.name} Range upgraded → {CurrentRange} (Lvl {rangeLevel})");
+            Debug.Log($"[TowerUpgrade] {gameObject.name} Range upgraded → {CurrentRange} (Lvl {rangeLevel}) for ${cost}");
         }
         else
         {
-            Debug.Log($"[TowerUpgrade] {gameObject.name} Range is already maxed at Lvl {MaxRangeLevel}.");
+            Debug.Log("[TowerUpgrade] Not enough money to upgrade range.");
         }
     }
-    
 }

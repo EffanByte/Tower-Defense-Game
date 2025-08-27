@@ -74,4 +74,25 @@ public class EconomyController : MonoBehaviour
         if (reward > 0) AddMoney(reward);
     }
 
+    // --- Tower purchase ---
+    public void SpendMoneyForTower(int towerIndex)
+    {
+        int cost = 0;
+        switch (towerIndex)
+        {
+            case 0: cost = gunCost; break;
+            case 1: cost = sniperCost; break;
+            case 2: cost = flameCost; break;
+            case 3: cost = chaosCost; break;
+        }
+        if (cost > 0)
+        {
+            if (!SpendMoney(cost))
+                Debug.Log("[Monetization] Not enough money for tower!");
+        }
+    }
+    public void SpendMoneyForUpgrade()
+    {
+        
+    }
 }
