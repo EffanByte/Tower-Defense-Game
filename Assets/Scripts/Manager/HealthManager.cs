@@ -35,11 +35,11 @@ public class HealthManager : MonoBehaviour
 
         // SAFE invoke (no listeners = no crash)
         OnHealthChanged?.Invoke(currentHealth, maxHealth);
-        Debug.Log($"[HealthManager] Damage {amount} → {currentHealth}/{maxHealth}");
 
         if (currentHealth <= 0)
         {
-            OnDeath?.Invoke();
+            OnDeath?.Invoke();  
+            Time.timeScale = 0f; // ⏸ Pause everything
             Debug.Log("[HealthManager] Dead");
         }
     }
