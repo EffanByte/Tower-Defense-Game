@@ -14,6 +14,8 @@ public class AirstrikeAbility : MonoBehaviour
     [SerializeField] private float lineWidth = 0.05f;
     [SerializeField] private Color lineColor = Color.red;
 
+    [SerializeField] private GameObject explosionPrefab;
+
     private InputRouter router;
     private bool targeting = false;
     private Vector3 currentPos;
@@ -106,6 +108,11 @@ public class AirstrikeAbility : MonoBehaviour
             if (health)
                 health.TakeDamage(bombDamage, manager, agent);
         }
+
+        // 🔥 Instantiate explosion visual
+        GameObject explosion = Instantiate(explosionPrefab, center, Quaternion.Euler(90,0,0));
+        explosion.transform.localScale = Vector3.one * bombRadius * 2f; // scale to diameter
+        Destroy(explosion, 0.83f); // cleanup after animation
         Debug.Log($"[Airstrike] Bomb dropped at {center}, hits={hits.Length}");
     }
 
