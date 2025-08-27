@@ -1,3 +1,4 @@
+using UnityEditor.Rendering.Universal;
 using UnityEngine;
 public class TowerInfoController : MonoBehaviour
 {
@@ -25,7 +26,6 @@ public class TowerInfoController : MonoBehaviour
 
     void ShowUpgrade(GameObject tower)
     {
-        var detail = tower.GetComponent<TowerDetail>();
         SelectedTower = tower;
         ToggleUI();
     }
@@ -37,4 +37,20 @@ public class TowerInfoController : MonoBehaviour
         else
             infoUI.SetActive(false);
     }
+
+    public void HandleUpgradeDamage()
+    {
+        SelectedTower.GetComponent<TowerUpgrade>().UpgradeDamage();
+    }
+
+    public void HandleUpgradeSpeed()
+    {
+        SelectedTower.GetComponent<TowerUpgrade>().UpgradeSpeed();
+    }
+
+    public void HandleUpgradeRange()
+    {
+        SelectedTower.GetComponent<TowerUpgrade>().UpgradeRange();
+    }
+
 }
