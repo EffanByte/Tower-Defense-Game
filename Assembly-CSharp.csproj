@@ -57,6 +57,7 @@
     <Compile Include="Assets\Scripts\Level\AutoSizeBoxCollider.cs" />
     <Compile Include="Assets\Scripts\Tower\TowerBuildController.cs" />
     <Compile Include="Assets\Scripts\Level\FitToGridCell.cs" />
+    <Compile Include="Assets\Scripts\Tower\RangeVisualizer.cs" />
     <Compile Include="Assets\Scripts\Tower\GunTurret.cs" />
     <Compile Include="Assets\Scripts\Tower\TowerUpgrade.cs" />
     <Compile Include="Assets\Scripts\Tower\RotateTower.cs" />
