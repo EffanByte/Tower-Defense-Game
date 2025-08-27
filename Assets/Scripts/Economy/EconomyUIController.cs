@@ -9,6 +9,12 @@ public class EconomyUIController : MonoBehaviour
     [SerializeField] private TextMeshProUGUI speedUpgradeLabel;
     [SerializeField] private TextMeshProUGUI rangeUpgradeLabel;
 
+    [Header("Tower Prices UI")]
+    [SerializeField] private TextMeshProUGUI gunPriceLabel;
+    [SerializeField] private TextMeshProUGUI sniperPriceLabel;
+    [SerializeField] private TextMeshProUGUI flamePriceLabel;
+    [SerializeField] private TextMeshProUGUI chaosPriceLabel;
+
     bool subscribed;
 
     void OnEnable()
@@ -30,7 +36,8 @@ public class EconomyUIController : MonoBehaviour
             EconomyController.Instance.OnMoneyChanged += UpdateMoneyUI;
             subscribed = true;
             UpdateMoneyUI(ec.CurrentMoney);  // immediate draw
-            UpdateUpgradeCostsUI();          // also refresh tower info
+            UpdateUpgradeCostsUI();
+            UpdateTowerPricesUI();
         }
         else
         {
@@ -53,7 +60,6 @@ public class EconomyUIController : MonoBehaviour
         if (moneyLabel)
             moneyLabel.text = $"${currentMoney}";
 
-        // refresh upgrade pricing whenever money changes
         UpdateUpgradeCostsUI();
     }
 
@@ -73,5 +79,16 @@ public class EconomyUIController : MonoBehaviour
         if (damageUpgradeLabel) damageUpgradeLabel.text = $"${upgrade.GetDamageUpgradeCost()}";
         if (speedUpgradeLabel) speedUpgradeLabel.text = $"${upgrade.GetSpeedUpgradeCost()}";
         if (rangeUpgradeLabel) rangeUpgradeLabel.text = $"${upgrade.GetRangeUpgradeCost()}";
+    }
+
+    public void UpdateTowerPricesUI()
+    {
+        var ec = EconomyController.Instance;
+        if (!ec) return;
+
+        if (gunPriceLabel) gunPriceLabel.text = $"${ec.gunCost}";
+        if (sniperPriceLabel) sniperPriceLabel.text = $"${ec.sniperCost}";
+        if (flamePriceLabel) flamePriceLabel.text = $"${ec.flameCost}";
+        if (chaosPriceLabel) chaosPriceLabel.text = $"${ec.chaosCost}";
     }
 }
