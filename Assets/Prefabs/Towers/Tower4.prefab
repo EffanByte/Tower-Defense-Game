@@ -115,6 +115,11 @@ MonoBehaviour:
   buffDuration: 1.5
   baseDamage: 50
   baseRange: 12
+  blueflameRingPrefab: {fileID: 3244409283299348201, guid: 2eac7116ed261bb42ae5513fccf42cbd, type: 3}
+  ringExpandSpeed: 5
+  ringSpinSpeed: 180
+  ringColor: {r: 0.35, g: 0.65, b: 1, a: 1}
+  ringYOffset: 0.05
 --- !u!114 &-1264142760639674094
 MonoBehaviour:
   m_ObjectHideFlags: 0

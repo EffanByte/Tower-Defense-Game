@@ -18,6 +18,16 @@ public class UltimateOpTower : MonoBehaviour
     [SerializeField] private int baseDamage = 50;
     [SerializeField] private float baseRange = 12f;
 
+    // ── Flame Ring FX ─────────────────────────────────────────────────────────
+    [Header("Flame Ring FX")]
+    [Tooltip("Prefab with SphereCollider (isTrigger) + child SpriteRenderer. (Can be the same prefab used by your flame tower.)")]
+    [SerializeField] private GameObject blueflameRingPrefab;
+
+    [SerializeField] private float ringExpandSpeed = 5f;
+    [SerializeField] private float ringSpinSpeed = 180f;
+    [SerializeField] private Color ringColor = new Color(0.35f, 0.65f, 1.0f, 1f); // blue-ish
+    [SerializeField] private float ringYOffset = 0.05f; // hover slightly above ground
+
     private TowerUpgrade upgrade;
     private int enemyLayer;
     private int towerLayer;
@@ -63,46 +73,62 @@ public class UltimateOpTower : MonoBehaviour
 
     void DoPulse()
     {
-        Collider[] hits = Physics.OverlapSphere(transform.position, upgrade.CurrentRange, 1 << enemyLayer);
-        foreach (var hit in hits)
-        {
-            var health = hit.GetComponent<EnemyHealth>();
-            var agent = hit.GetComponent<EnemyPathAgent>();
-            var manager = agent ? agent.GetComponentInParent<EnemySpawner>() : null;
-
-            if (health != null)
-            {
-                health.TakeDamage(upgrade.CurrentDamage, manager, agent);
-            }
-        }
+        // Spawn a blue, spinning ring that expands and damages enemies on contact
+        SpawnFlameRing();
 
         if (crown)
-            crown.localScale = Vector3.one * 1.2f;
+            crown.localScale = Vector3.one * 1.2f; // quick visual kick (optional)
+    }
+
+    void SpawnFlameRing()
+    {
+        if (!blueflameRingPrefab)
+        {
+            Debug.LogWarning("[UltimateOpTower] FlameRing prefab not set.");
+            return;
+        }
+
+        var maxRadius = upgrade ? upgrade.CurrentRange : baseRange;
+
+        var go = Instantiate(
+            blueflameRingPrefab,
+            new Vector3(transform.position.x, transform.position.y + ringYOffset, transform.position.z),
+            Quaternion.identity
+        );
+
+        // Ensure a FlameRing component exists (it can be on the prefab already)
+        var ring = go.GetComponent<BlueFlameRing>();
+        if (!ring) ring = go.AddComponent<BlueFlameRing>();
+
+        // Initialize: damage, layers, expansion, spin, radius, color
+        int enemyMask = 1 << enemyLayer;
+        float dmg = upgrade ? upgrade.CurrentDamage : baseDamage;
+        ring.Init(dmg, enemyMask, ringExpandSpeed, maxRadius, ringSpinSpeed, ringColor);
     }
 
     void ApplyAuraBuff()
-{
-    if (towerLayer < 0) return;
-
-    foreach (var t in Object.FindObjectsOfType<TowerUpgrade>())
-        t.ClearAuraBuff();
-
-    Collider[] towers = Physics.OverlapSphere(transform.position, upgrade.CurrentRange / 2, 1 << towerLayer);
-    foreach (var t in towers)
     {
-        var tu = t.GetComponent<TowerUpgrade>();
-        if (tu != null)
-            tu.SetAuraBuff(buffMultiplier, buffMultiplier);
-    }
-}
+        if (towerLayer < 0) return;
 
+        foreach (var t in Object.FindObjectsOfType<TowerUpgrade>())
+            t.ClearAuraBuff();
+
+        Collider[] towers = Physics.OverlapSphere(transform.position, (upgrade ? upgrade.CurrentRange : baseRange) / 2, 1 << towerLayer);
+        foreach (var t in towers)
+        {
+            var tu = t.GetComponent<TowerUpgrade>();
+            if (tu != null)
+                tu.SetAuraBuff(buffMultiplier, buffMultiplier);
+        }
+    }
 
     void OnDrawGizmosSelected()
     {
         Gizmos.color = new Color(1f, 0.2f, 0.2f, 0.4f);
-        Gizmos.DrawWireSphere(transform.position, upgrade ? upgrade.CurrentRange : baseRange);
+        float r = upgrade ? upgrade.CurrentRange : baseRange;
+        Gizmos.DrawWireSphere(transform.position, r);
 
         Gizmos.color = new Color(0.2f, 0.5f, 1f, 0.25f);
-        Gizmos.DrawWireSphere(transform.position, (upgrade ? upgrade.CurrentRange : baseRange) / 2);
+        Gizmos.DrawWireSphere(transform.position, r / 2f);
     }
 }

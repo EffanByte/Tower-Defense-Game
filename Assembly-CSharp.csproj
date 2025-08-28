@@ -76,6 +76,7 @@
     <Compile Include="Assets\Scripts\UI\GameOverUI.cs" />
     <Compile Include="Assets\Scripts\Economy\EconomyController.cs" />
     <Compile Include="Assets\_Addons\TutorialInfo\Scripts\Readme.cs" />
+    <Compile Include="Assets\Scripts\Tower\BlueFlameRing.cs" />
     <Compile Include="Assets\Scripts\Manager\WaveManager.cs" />
     <Compile Include="Assets\Scripts\Monetization\AdsManager.cs" />
     <Compile Include="Assets\Scripts\UI\SkinItemUI.cs" />
