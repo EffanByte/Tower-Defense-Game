@@ -1,53 +1,42 @@
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.EventSystems;
+using TMPro;
 
-public class SkinItemUI : MonoBehaviour
+public class SkinItemUI : MonoBehaviour, IPointerClickHandler
 {
-    [Header("UI Refs")]
-    public RawImage preview;       // assign in prefab
-    public Text nameText;
-    public GameObject lockGroup;   // shows "Watch ad to unlock"
-    public Button unlockButton;
-    public Button selectButton;
-    public GameObject selectedHighlight;
+    [Header("Optional UI (only name is required)")]
+    public TextMeshProUGUI nameText;                 // label
+    public GameObject lockGroup;          // e.g., "Watch ad to unlock" badge
+    public GameObject selectedHighlight;  // outline/glow
 
-    private System.Action _onSelect;
-    private System.Action _onUnlock;
+    // runtime state
+    private bool _isUnlocked;
+    private int _cosmeticIndex;           // -1 = Default, >=0 = CosmeticManager.availableSkins index
+    private System.Action<int> _onSelect; // will call CosmeticManager.SelectSkin(index)
+    private System.Action _onUnlock;      // placeholder for ad unlock
 
-    public void Setup(
-        Texture2D previewTex, string displayName,
-        bool isUnlocked, bool isSelected,
-        System.Action onSelect, System.Action onUnlock
-    )
+    /// <summary>
+    /// Prepare the card. Keep it dead simple.
+    /// </summary>
+    public void Setup(string displayName, int cosmeticIndex, bool isUnlocked, bool isSelected,
+                      System.Action<int> onSelect, System.Action onUnlock)
     {
-        if (preview)
-        {
-            preview.texture = previewTex;
-            preview.enabled = true;
-            preview.color = Color.white;
-        }
-
         if (nameText) nameText.text = displayName;
 
+        _cosmeticIndex = cosmeticIndex;
+        _isUnlocked = isUnlocked;
         _onSelect = onSelect;
         _onUnlock = onUnlock;
 
-        if (lockGroup) lockGroup.SetActive(!isUnlocked);
-
-        if (selectButton)
-        {
-            selectButton.interactable = isUnlocked;
-            selectButton.onClick.RemoveAllListeners();
-            selectButton.onClick.AddListener(() => _onSelect?.Invoke());
-        }
-
-        if (unlockButton)
-        {
-            unlockButton.onClick.RemoveAllListeners();
-            unlockButton.onClick.AddListener(() => _onUnlock?.Invoke());
-        }
-
+        if (lockGroup) lockGroup.SetActive(!_isUnlocked);
         if (selectedHighlight) selectedHighlight.SetActive(isSelected);
+    }
+
+    public void OnPointerClick(PointerEventData _)
+    {
+        if (_isUnlocked) _onSelect?.Invoke(_cosmeticIndex);
+        else _onUnlock?.Invoke();
     }
 
     public void SetSelected(bool selected)
@@ -57,7 +46,7 @@ public class SkinItemUI : MonoBehaviour
 
     public void SetUnlocked(bool unlocked)
     {
+        _isUnlocked = unlocked;
         if (lockGroup) lockGroup.SetActive(!unlocked);
-        if (selectButton) selectButton.interactable = unlocked;
     }
 }
