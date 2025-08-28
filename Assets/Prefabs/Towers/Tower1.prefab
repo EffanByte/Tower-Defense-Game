@@ -1,5 +1,36 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!1 &149118239600973185
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 537252436442521661}
+  m_Layer: 8
+  m_Name: Shoot Anchor
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &537252436442521661
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 149118239600973185}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0.97, z: 1.56}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 7013810461299789453}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &7085358842361398574
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -86,7 +117,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
-    m_AddedGameObjects: []
+    m_AddedGameObjects:
+    - targetCorrespondingSourceObject: {fileID: -9006549272062162013, guid: d74352572614b904991f6b472db586df, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 537252436442521661}
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: d74352572614b904991f6b472db586df, type: 3}
       insertIndex: -1
@@ -110,6 +144,11 @@ PrefabInstance:
       insertIndex: -1
       addedObject: {fileID: 6578063467571179805}
   m_SourcePrefab: {fileID: 100100000, guid: d74352572614b904991f6b472db586df, type: 3}
+--- !u!4 &7013810461299789453 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: -9006549272062162013, guid: d74352572614b904991f6b472db586df, type: 3}
+  m_PrefabInstance: {fileID: 7085358842361398574}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &7968320754780665983 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: d74352572614b904991f6b472db586df, type: 3}
@@ -127,11 +166,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0342fb9fb9cfad941848a5793197123f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  gun: {fileID: 0}
   baseDamage: 10
   baseCooldown: 1.5
   baseRange: 8
   recoilDistance: 0.5
   enemyLayerName: Enemy
+  muzzleAnchor: {fileID: 537252436442521661}
+  muzzleFlashPrefab: {fileID: 0}
+  muzzleSprite: {fileID: -857824679, guid: 09720c15f763021438e0191c76fca610, type: 3}
+  muzzleForwardOffset: 0.6
+  muzzleScale: 1
+  muzzleLifetime: 0.06
+  billboardToCamera: 0
 --- !u!114 &-8322091183107274150
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -325,6 +372,4 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   defaultMaterial: {fileID: 0}
-  targetBaseMaterial: {fileID: 2100000, guid: 725ee0b69d0360b4fa5da51e047c62f9, type: 2}
-  fallbackToIndex0IfNotFound: 0
   renderers: []

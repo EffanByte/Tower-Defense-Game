@@ -11,9 +11,10 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/GameScene.unity
     guid: f3fe162b55917504aa1cd4f3c7aa474b
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/Cosmetics.unity
     guid: 5817cc8e5563dff4a9de938edf89ac4c
   m_configObjects:
+    com.unity.input.settings: {fileID: 11400000, guid: 99a01e1b6d015fc4a9513f6c4840dcc1, type: 2}
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   m_UseUCBPForAssetBundles: 0
