@@ -54,6 +54,7 @@
     <Compile Include="Assets\Scripts\Input\InputRouter.cs" />
     <Compile Include="Assets\Scripts\UI\EnemyHealthBarUI.cs" />
     <Compile Include="Assets\Scripts\Tower\FlameTurret.cs" />
+    <Compile Include="Assets\Scripts\UI\SkinManagerUI.cs" />
     <Compile Include="Assets\Scripts\UI\HealthTextUI.cs" />
     <Compile Include="Assets\Scripts\Level\AutoSizeBoxCollider.cs" />
     <Compile Include="Assets\Scripts\Tower\TowerBuildController.cs" />
@@ -76,6 +77,7 @@
     <Compile Include="Assets\Scripts\Economy\EconomyController.cs" />
     <Compile Include="Assets\_Addons\TutorialInfo\Scripts\Readme.cs" />
     <Compile Include="Assets\Scripts\Manager\WaveManager.cs" />
+    <Compile Include="Assets\Scripts\UI\SkinItemUI.cs" />
     <Compile Include="Assets\Scripts\Enemy\EnemyAnimationBehavior.cs" />
     <Compile Include="Assets\Scripts\Manager\HealthManager.cs" />
     <Compile Include="Assets\Scripts\Tower\FlameRing.cs" />
