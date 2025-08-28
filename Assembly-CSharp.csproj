@@ -50,11 +50,11 @@
   <ItemGroup>
     <Compile Include="Assets\Scripts\Tower\TowerDetail.cs" />
     <Compile Include="Assets\Scripts\Enemy\EnemySpawner.cs" />
-    <Compile Include="Assets\Scripts\Economy\EconomyUIController.cs" />
     <Compile Include="Assets\Scripts\Enemy\EnemyHealth.cs" />
     <Compile Include="Assets\Scripts\Input\InputRouter.cs" />
+    <Compile Include="Assets\Scripts\UI\EnemyHealthBarUI.cs" />
     <Compile Include="Assets\Scripts\Tower\FlameTurret.cs" />
-    <Compile Include="Assets\Scripts\Manager\HealthTextUI.cs" />
+    <Compile Include="Assets\Scripts\UI\HealthTextUI.cs" />
     <Compile Include="Assets\Scripts\Level\AutoSizeBoxCollider.cs" />
     <Compile Include="Assets\Scripts\Tower\TowerBuildController.cs" />
     <Compile Include="Assets\Scripts\Level\FitToGridCell.cs" />
@@ -63,14 +63,16 @@
     <Compile Include="Assets\Scripts\Tower\TowerUpgrade.cs" />
     <Compile Include="Assets\Scripts\Tower\RotateTower.cs" />
     <Compile Include="Assets\Scripts\Tower\TowerInfoController.cs" />
+    <Compile Include="Assets\Scripts\UI\EconomyUIController.cs" />
     <Compile Include="Assets\Scripts\Input\SceneManagement.cs" />
     <Compile Include="Assets\Scripts\Enemy\EnemyEnums.cs" />
     <Compile Include="Assets\Scripts\Level\TDLevel.cs" />
-    <Compile Include="Assets\Scripts\Manager\GameOverUI.cs" />
+    <Compile Include="Assets\Scripts\Manager\CosmeticManager.cs" />
     <Compile Include="Assets\Scripts\Ability\AirstrikeAbility.cs" />
-    <Compile Include="Assets\Scripts\Enemy\EnemyHealthBarUI.cs" />
     <Compile Include="Assets\Scripts\Tower\UltimateOPTower.cs" />
+    <Compile Include="Assets\Scripts\Tower\TowerAppearance.cs" />
     <Compile Include="Assets\Scripts\Enemy\EnemyPathAgent.cs" />
+    <Compile Include="Assets\Scripts\UI\GameOverUI.cs" />
     <Compile Include="Assets\Scripts\Economy\EconomyController.cs" />
     <Compile Include="Assets\_Addons\TutorialInfo\Scripts\Readme.cs" />
     <Compile Include="Assets\Scripts\Manager\WaveManager.cs" />
