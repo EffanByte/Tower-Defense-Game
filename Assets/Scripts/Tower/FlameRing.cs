@@ -58,10 +58,9 @@ public class FlameRing : MonoBehaviour
         EnemyHealth health = other.GetComponent<EnemyHealth>();
         EnemyPathAgent agent = other.GetComponent<EnemyPathAgent>();
         EnemySpawner manager = agent ? agent.GetComponentInParent<EnemySpawner>() : null;
-
         if (health != null)
         {
-            health.TakeDamage(GetComponent<TowerUpgrade>().CurrentDamage, manager, agent); // or pass damage from turret
+            health.TakeDamage(GetComponentInParent<TowerUpgrade>().CurrentDamage, manager, agent); // or pass damage from turret
         }
     }
 }

@@ -72,6 +72,10 @@ public class BlueFlameRing : MonoBehaviour
         {
             currentRadius = Mathf.Min(maxRadius, currentRadius + expandSpeed * Time.deltaTime);
             col.radius = currentRadius;
+
+            // Scale ring (diameter)
+            float scale = currentRadius * 2f;
+            transform.localScale = baseScale * scale;
             
             // Fade alpha based on expansion
             float t = Mathf.InverseLerp(0f, maxRadius, currentRadius);
@@ -88,14 +92,14 @@ public class BlueFlameRing : MonoBehaviour
         }
     }
 
-    void OnTriggerEnter(Collider other)
+    void OnCollisionEnter(Collision other)
     {
         Debug.Log("Trigger is running");
         // Only damage enemies (by layer mask)
         if (other.gameObject.layer == enemyMask) return;
 
-        var health = other.GetComponent<EnemyHealth>();
-        var agent  = other.GetComponent<EnemyPathAgent>();
+        var health = other.gameObject.GetComponent<EnemyHealth>();
+        var agent  = other.gameObject.GetComponent<EnemyPathAgent>();
         Debug.Log("triggered");
         var manager = agent ? agent.GetComponentInParent<EnemySpawner>() : null;
 

@@ -90,7 +90,7 @@ public class UltimateOpTower : MonoBehaviour
         var go = Instantiate(
             blueflameRingPrefab,
             new Vector3(transform.position.x, transform.position.y + ringYOffset, transform.position.z),
-            Quaternion.identity
+            Quaternion.identity, transform
         );
 
         // Ensure a FlameRing component exists (it can be on the prefab already)
