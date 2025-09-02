@@ -24,8 +24,7 @@ public class RangeVisualizer : MonoBehaviour
     }
 
     void Update()
-    {
-        Debug.Log(upgrade.CurrentRange);
+    { 
         DrawCircle(upgrade.CurrentRange);
     }
 

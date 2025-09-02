@@ -9,8 +9,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6366803840824325604}
-  - component: {fileID: 1248063395929074374}
   - component: {fileID: -3012776426381733965}
+  - component: {fileID: 3707559490284830564}
   m_Layer: 0
   m_Name: blueflamering
   m_TagString: Untagged
@@ -34,20 +34,6 @@ Transform:
   - {fileID: 2517669303979724107}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1248063395929074374
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3244409283299348201}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2d70867c3aa48ea43b7cabd854d0f21e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  expandSpeed: 5
-  maxRadius: 4
 --- !u!135 &-3012776426381733965
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -63,12 +49,24 @@ SphereCollider:
     serializedVersion: 2
     m_Bits: 0
   m_LayerOverridePriority: 0
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
   m_Radius: 1
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &3707559490284830564
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3244409283299348201}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 243ec0729c1625c4ab1201d1a239b1c4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &6403430552495074589
 GameObject:
   m_ObjectHideFlags: 0

@@ -135,6 +135,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 7dc9b599eb9ab604cb7d608c543b2d6a, type: 3}
       insertIndex: -1
       addedObject: {fileID: -3384964427166539355}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 7dc9b599eb9ab604cb7d608c543b2d6a, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 8186528591133695826}
   m_SourcePrefab: {fileID: 100100000, guid: 7dc9b599eb9ab604cb7d608c543b2d6a, type: 3}
 --- !u!1 &7211780291027444776 stripped
 GameObject:
@@ -190,12 +193,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 7211780291027444776}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c5ccad20359c9474ead5d9dcfd307750, type: 3}
+  m_Script: {fileID: 11500000, guid: 01561bffad80f0e44b0f29afeb5b1f5e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  baseDamage: 10
-  baseFireCooldown: 1.5
-  baseRange: 6
+  baseDamage: 0
+  baseFireCooldown: 0
+  baseRange: 0
   damageLevel: 1
   speedLevel: 1
   rangeLevel: 1
@@ -360,6 +363,30 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   defaultMaterial: {fileID: 0}
   renderers: []
+--- !u!114 &8186528591133695826
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7211780291027444776}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 01561bffad80f0e44b0f29afeb5b1f5e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  baseDamage: 0
+  baseFireCooldown: 0
+  baseRange: 0
+  damageLevel: 1
+  speedLevel: 1
+  rangeLevel: 1
+  damageStep: 10
+  speedStep: 0.2
+  rangeStep: 2
+  smallDamageStep: 2
+  smallSpeedStep: 0.05
+  MaxRangeLevel: 3
 --- !u!4 &7770474077847360218 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -9006549272062162013, guid: 7dc9b599eb9ab604cb7d608c543b2d6a, type: 3}

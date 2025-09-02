@@ -4,16 +4,16 @@ using UnityEngine;
 public class BlueFlameRing : MonoBehaviour
 {
     [Header("Runtime (filled by Init)")]
-    [SerializeField] private float expandSpeed = 5f;
-    [SerializeField] private float maxRadius   = 4f;
-    [SerializeField] private float spinSpeed   = 180f;
-    [SerializeField] private float damage      = 10f;
-    [SerializeField] private Color ringColor   = Color.cyan;
-    [SerializeField] private LayerMask enemyMask;
+    private float expandSpeed = 2f;
+    private float maxRadius   = 4f;
+    private float spinSpeed   = 180f;
+    private float damage      = 10f;
+    private Color ringColor   = Color.cyan;
+    private LayerMask enemyMask;
 
     [Header("Visual Fade")]
-    [SerializeField] private float startAlpha = 1f;
-    [SerializeField] private float endAlpha   = 0f;
+     private float startAlpha = 1f;
+     private float endAlpha   = 0f;
 
     private SphereCollider col;
     private Vector3 baseScale;
@@ -72,11 +72,7 @@ public class BlueFlameRing : MonoBehaviour
         {
             currentRadius = Mathf.Min(maxRadius, currentRadius + expandSpeed * Time.deltaTime);
             col.radius = currentRadius;
-
-            // Scale ring (diameter)
-            float scale = currentRadius * 2f;
-            transform.localScale = baseScale * scale;
-
+            
             // Fade alpha based on expansion
             float t = Mathf.InverseLerp(0f, maxRadius, currentRadius);
             if (sr != null)
@@ -94,11 +90,13 @@ public class BlueFlameRing : MonoBehaviour
 
     void OnTriggerEnter(Collider other)
     {
+        Debug.Log("Trigger is running");
         // Only damage enemies (by layer mask)
-        if (((1 << other.gameObject.layer) & enemyMask) == 0) return;
+        if (other.gameObject.layer == enemyMask) return;
 
         var health = other.GetComponent<EnemyHealth>();
         var agent  = other.GetComponent<EnemyPathAgent>();
+        Debug.Log("triggered");
         var manager = agent ? agent.GetComponentInParent<EnemySpawner>() : null;
 
         if (health != null)

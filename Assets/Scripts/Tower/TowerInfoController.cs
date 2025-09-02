@@ -34,12 +34,12 @@ public class TowerUpgradeController : MonoBehaviour
     {
         if (SelectedTower != null)
         {
-            infoUI.SetActive(true);
+         //   infoUI.SetActive(true);
             toggleRangeVisualizer();
         }
         else
         {
-            infoUI.SetActive(false);
+         //  infoUI.SetActive(false);
             toggleRangeVisualizer();    
         }
     }

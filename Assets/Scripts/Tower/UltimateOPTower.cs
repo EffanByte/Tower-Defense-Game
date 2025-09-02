@@ -16,7 +16,7 @@ public class UltimateOpTower : MonoBehaviour
 
     [Header("Base Stats")]
     [SerializeField] private int baseDamage = 50;
-    [SerializeField] private float baseRange = 12f;
+    [SerializeField] private float baseRange = 6f;
 
     // ── Flame Ring FX ─────────────────────────────────────────────────────────
     [Header("Flame Ring FX")]
@@ -26,7 +26,7 @@ public class UltimateOpTower : MonoBehaviour
     [SerializeField] private float ringExpandSpeed = 5f;
     [SerializeField] private float ringSpinSpeed = 180f;
     [SerializeField] private Color ringColor = new Color(0.35f, 0.65f, 1.0f, 1f); // blue-ish
-    [SerializeField] private float ringYOffset = 0.05f; // hover slightly above ground
+    [SerializeField] private float ringYOffset = 0.1f; // hover slightly above ground
 
     private TowerUpgrade upgrade;
     private int enemyLayer;
@@ -45,13 +45,10 @@ public class UltimateOpTower : MonoBehaviour
         if (upgrade)
         {
             // Init with stronger scaling than normal towers
-            upgrade.InitOP(
+            upgrade.Init(
                 baseDamage,       // starting damage
                 pulseCooldown,    // cooldown baseline
-                baseRange,        // range baseline
-                20, 5,            // bigDamageStep, smallDamageStep
-                0.5f, 0.1f,       // bigSpeedStep, smallSpeedStep
-                4f, 6             // rangeStep, maxRangeLvl
+                baseRange        // range baseline1
             );
         }
 
@@ -98,7 +95,6 @@ public class UltimateOpTower : MonoBehaviour
 
         // Ensure a FlameRing component exists (it can be on the prefab already)
         var ring = go.GetComponent<BlueFlameRing>();
-        if (!ring) ring = go.AddComponent<BlueFlameRing>();
 
         // Initialize: damage, layers, expansion, spin, radius, color
         int enemyMask = 1 << enemyLayer;

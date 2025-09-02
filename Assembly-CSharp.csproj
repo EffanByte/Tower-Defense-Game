@@ -42,12 +42,14 @@
     <UnityVersion>6000.0.51f1</UnityVersion>
   </PropertyGroup>
   <ItemGroup>
+    <Analyzer Include="C:\Users\GNG\.vscode\extensions\visualstudiotoolsforunity.vstuc-1.1.3\Analyzers\Microsoft.Unity.Analyzers.dll" />
     <Analyzer Include="D:\Internshpit\Unity\6000.0.51f1\Editor\Data\Tools\Unity.SourceGenerators\Unity.SourceGenerators.dll" />
     <Analyzer Include="D:\Internshpit\Unity\6000.0.51f1\Editor\Data\Tools\Unity.SourceGenerators\Unity.Properties.SourceGenerator.dll" />
     <Analyzer Include="D:\Internshpit\Unity\6000.0.51f1\Editor\Data\Tools\Unity.SourceGenerators\Unity.UIToolkit.SourceGenerator.dll" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets\Scripts\Tower\TowerDetail.cs" />
+    <Compile Include="Assets\Scripts\Tower\TowerUpgradeController.cs" />
     <Compile Include="Assets\Scripts\Enemy\EnemySpawner.cs" />
     <Compile Include="Assets\Scripts\Enemy\EnemyHealth.cs" />
     <Compile Include="Assets\Scripts\Input\InputRouter.cs" />
@@ -60,7 +62,6 @@
     <Compile Include="Assets\Scripts\Level\FitToGridCell.cs" />
     <Compile Include="Assets\Scripts\Tower\RangeVisualizer.cs" />
     <Compile Include="Assets\Scripts\Tower\GunTurret.cs" />
-    <Compile Include="Assets\Scripts\Tower\TowerUpgrade.cs" />
     <Compile Include="Assets\Scripts\Tower\RotateTower.cs" />
     <Compile Include="Assets\Scripts\Tower\TowerInfoController.cs" />
     <Compile Include="Assets\Scripts\UI\EconomyUIController.cs" />
