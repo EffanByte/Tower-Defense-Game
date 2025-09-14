@@ -2,17 +2,17 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Text;
 using UnityEngine;
-using UnityEngine.UI; // for Image
+using UnityEngine.UI;
 
 public class SkinManagerUI : MonoBehaviour
 {
     [System.Serializable]
     public class SkinMeta
     {
-        public string id;                 
-        public string displayName;        
-        public int cosmeticIndex = -1;    
-        public bool unlockedByDefault;    
+        public string id;
+        public string displayName;
+        public int cosmeticIndex = -1;
+        public bool unlockedByDefault;
     }
 
     [Header("Data")]
@@ -26,6 +26,9 @@ public class SkinManagerUI : MonoBehaviour
     public CosmeticManager cosmeticManager;
 
     private readonly List<SkinItemUI> _cards = new();
+    
+    // 🔥 NEW: A constant prefix for our PlayerPrefs keys to keep them organized.
+    private const string UnlockKeyPrefix = "SKIN_UNLOCKED_";
 
     private IEnumerator Start()
     {
@@ -67,27 +70,23 @@ public class SkinManagerUI : MonoBehaviour
         for (int i = 0; i < skins.Count; i++)
         {
             var meta = skins[i];
-
             var go = Instantiate(skinCardPrefab, gridParent);
             go.name = $"SkinCard_{meta.id}_{i}";
 
-            //  add top padding for the first row
             if (i == 0)
             {
                 var rt = go.GetComponent<RectTransform>();
                 if (rt != null)
                 {
-                    rt.offsetMax -= new Vector2(0, 10); // shift down 10 from the top
+                    rt.offsetMax -= new Vector2(0, 10);
                 }
             }
-            var card = go.GetComponent<SkinItemUI>();
-            if (!card)
-            {
-                Debug.LogError($"[SkinManagerUI] SkinItemUI missing on prefab instance: {go.name}");
-                continue;
-            }
 
-            bool isUnlocked = IsUnlockedForTesting(meta);
+            var card = go.GetComponent<SkinItemUI>();
+            if (!card) continue;
+
+            // 🔥 CHANGED: We now call our new, real functions.
+            bool isUnlocked = IsUnlocked(meta);
             bool isSelected = IsSelected(meta.cosmeticIndex);
 
             card.Setup(
@@ -96,18 +95,14 @@ public class SkinManagerUI : MonoBehaviour
                 isUnlocked: isUnlocked,
                 isSelected: isSelected,
                 onSelect: idx => cosmeticManager?.SelectSkin(idx),
-                onUnlock: () => UnlockForTesting(meta)
+                onUnlock: () => UnlockSkin(meta) // This is triggered by the lock icon.
             );
-
-            // 🔥 NEW: try load preview sprite from Assets/Textures
+            
             var previewSprite = LoadSkinSprite(meta.id);
             if (previewSprite != null)
             {
                 var img = go.GetComponentInChildren<Image>();
-                if (img != null)
-                {
-                    img.sprite = previewSprite;
-                }
+                if (img != null) img.sprite = previewSprite;
             }
 
             _cards.Add(card);
@@ -121,16 +116,35 @@ public class SkinManagerUI : MonoBehaviour
             _cards[i].SetSelected(skins[i].cosmeticIndex == selected);
     }
 
-    private bool IsUnlockedForTesting(SkinMeta meta)
+    // check for unlocks.
+    private bool IsUnlocked(SkinMeta meta)
     {
-        if (meta.cosmeticIndex == -1) return true;
-        int v = 1; 
-        return v == 1;
+        // A skin is always unlocked if it's marked as "unlocked by default".
+        if (meta.unlockedByDefault)
+        {
+            return true;
+        }
+
+        // Otherwise, we check PlayerPrefs to see if a key exists for this skin's ID.
+        // We use '0' as the default value (meaning locked). '1' means unlocked.
+        string key = UnlockKeyPrefix + meta.id;
+        return PlayerPrefs.GetInt(key, 0) == 1;
     }
 
-    private void UnlockForTesting(SkinMeta meta)
+    // perform an unlock.
+    private void UnlockSkin(SkinMeta meta)
     {
-        Debug.Log($"[SkinManagerUI] (Test) Unlock requested for '{meta.displayName}' — already unlocked in test.");
+        if (meta.unlockedByDefault) return;
+
+        // Set the PlayerPrefs key for this skin to '1' (unlocked) and save it.
+        string key = UnlockKeyPrefix + meta.id;
+        PlayerPrefs.SetInt(key, 1);
+        PlayerPrefs.Save();
+
+        Debug.Log($"[SkinManagerUI] Unlocked '{meta.displayName}'! The UI will now refresh.");
+
+        // After unlocking, we must rebuild the cards to reflect the change.
+        RebuildCards();
     }
 
     private void AutoPopulateIfEmpty()
@@ -159,7 +173,7 @@ public class SkinManagerUI : MonoBehaviour
 
     private bool IsSelected(int cosmeticIndex)
         => !cosmeticManager ? cosmeticIndex == -1 : cosmeticManager.GetSelectedIndex() == cosmeticIndex;
-
+    
     private string SlugifyId(string raw)
     {
         if (string.IsNullOrEmpty(raw)) return "skin";
@@ -171,18 +185,12 @@ public class SkinManagerUI : MonoBehaviour
         while (s.Contains("__")) s = s.Replace("__", "_");
         return s.Trim('_');
     }
-
-    // ─────────────────────────────────────────────
-    // 🔥 NEW HELPER: load PNG as Sprite from Assets/Textures
-    // ─────────────────────────────────────────────
+    
     private Sprite LoadSkinSprite(string id)
     {
         string path = System.IO.Path.Combine(Application.dataPath, "Textures", id + ".png");
         if (!System.IO.File.Exists(path))
-        {
-            Debug.LogWarning($"[SkinManagerUI] Preview not found for {id} at {path}");
             return null;
-        }
 
         byte[] pngData = System.IO.File.ReadAllBytes(path);
         Texture2D tex = new Texture2D(2, 2, TextureFormat.RGBA32, false);

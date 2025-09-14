@@ -77,6 +77,10 @@ public class WaveManager : MonoBehaviour
     [Tooltip("Generate at most this many auto waves after manual; set large for endless.")]
     public int maxAutoWaves = 999;
 
+    [Header("Enemy Scaling")]
+    [Tooltip("Health multiplier per 5 waves. 0.2 = +20% HP at wave 5, +40% at wave 10, etc.")]
+    public float healthMultiplierPer5Waves = 0.6f;
+
     void Awake()
     {
         Time.timeScale = 1f; // resume before reload
@@ -133,56 +137,69 @@ public class WaveManager : MonoBehaviour
     }
 
     IEnumerator RunSingleWave(Wave wave, int visibleWaveNumber)
+{
+    CleanupDeadEnemies();
+
+    if (waveLabel) waveLabel.text = $"Wave: {visibleWaveNumber}";
+    Debug.Log($"[WaveManager] Starting Wave {visibleWaveNumber}: {wave.name}");
+
+    // --- NEW: Calculate level based on wave number ---
+    int levelUps = (visibleWaveNumber - 1) / 5;
+
+    // launch entries
+    foreach (var spawn in wave.entries)
     {
-        CleanupDeadEnemies();
-
-        if (waveLabel) waveLabel.text = $"Wave: {visibleWaveNumber}";
-        Debug.Log($"[WaveManager] Starting Wave {visibleWaveNumber}: {wave.name}");
-
-        // launch entries
-        foreach (var spawn in wave.entries)
+        if (!IsValidLane(spawn.laneIndex))
         {
-            if (!IsValidLane(spawn.laneIndex))
-            {
-                Debug.LogWarning($"[WaveManager] Missing lane {spawn.laneIndex} for entry '{spawn.label}'. Skipping.");
-                continue;
-            }
-
-            var (prefab, speedDefault) = ResolveArchetype(spawn.kind);
-            if (!prefab)
-            {
-                Debug.LogWarning($"[WaveManager] No prefab for {spawn.kind}. Skipping entry '{spawn.label}'.");
-                continue;
-            }
-
-            float useSpeed = (spawn.speedOverride > 0f) ? spawn.speedOverride : speedDefault;
-            lanes[spawn.laneIndex].SpawnBatch(prefab, spawn.count, spawn.interval, useSpeed, enemyY, spawn.kind);
+            Debug.LogWarning($"[WaveManager] Missing lane {spawn.laneIndex} for entry '{spawn.label}'. Skipping.");
+            continue;
         }
 
-        // optional: log expected cash for tuning
-        LogExpectedCash(wave, visibleWaveNumber);
+        // --- MODIFIED: Get baseHealth from our updated method ---
+        var (prefab, speedDefault, baseHealth) = ResolveArchetype(spawn.kind);
+        if (!prefab)
+        {
+            Debug.LogWarning($"[WaveManager] No prefab for {spawn.kind}. Skipping entry '{spawn.label}'.");
+            continue;
+        }
+        
+        // --- NEW: Calculate the final scaled health ---
+        int scaledHealth = Mathf.RoundToInt(baseHealth * (1f + levelUps * healthMultiplierPer5Waves));
 
-        // wait until wave cleared
-        yield return new WaitUntil(() => _activeEnemies == 0);
+        float useSpeed = (spawn.speedOverride > 0f) ? spawn.speedOverride : speedDefault;
 
-        // small inter-wave delay
-        float pause = wave.delayAfterWave > 0f ? wave.delayAfterWave : autoDelayAfterWave;
-        if (pause > 0f) yield return new WaitForSeconds(pause);
+        // --- MODIFIED: Pass scaledHealth to the SpawnBatch method ---
+        lanes[spawn.laneIndex].SpawnBatch(prefab, spawn.count, spawn.interval, useSpeed, enemyY, spawn.kind, scaledHealth);
     }
+
+    // optional: log expected cash for tuning
+    LogExpectedCash(wave, visibleWaveNumber);
+
+    // wait until wave cleared
+    yield return new WaitUntil(() => _activeEnemies == 0);
+
+    // small inter-wave delay
+    float pause = wave.delayAfterWave > 0f ? wave.delayAfterWave : autoDelayAfterWave;
+    if (pause > 0f) yield return new WaitForSeconds(pause);
+}
 
     Wave GetManualWave(int index) => waves[index];
 
-    (GameObject prefab, float speed) ResolveArchetype(EnemyKind kind)
+(GameObject prefab, float speed, int baseHealth) ResolveArchetype(EnemyKind kind)
+{
+    switch (kind)
     {
-        switch (kind)
-        {
-            case EnemyKind.Grunt: return (gruntPrefab, gruntSpeed);
-            case EnemyKind.Heavy: return (heavyPrefab, heavySpeed);
-            case EnemyKind.Stealth: return (stealthPrefab, stealthSpeed);
-            case EnemyKind.Boss: return (bossPrefab, bossSpeed);
-        }
-        return (null, 0f);
+        case EnemyKind.Grunt:
+            return (gruntPrefab, gruntSpeed, gruntPrefab ? gruntPrefab.GetComponent<EnemyHealth>().MaxHealth : 0);
+        case EnemyKind.Heavy:
+            return (heavyPrefab, heavySpeed, heavyPrefab ? heavyPrefab.GetComponent<EnemyHealth>().MaxHealth : 0);
+        case EnemyKind.Stealth:
+            return (stealthPrefab, stealthSpeed, stealthPrefab ? stealthPrefab.GetComponent<EnemyHealth>().MaxHealth : 0);
+        case EnemyKind.Boss:
+            return (bossPrefab, bossSpeed, bossPrefab ? bossPrefab.GetComponent<EnemyHealth>().MaxHealth : 0);
     }
+    return (null, 0f, 0);
+}
 
     bool IsValidLane(int idx) => (idx >= 0 && lanes != null && idx < lanes.Length && lanes[idx] != null);
 

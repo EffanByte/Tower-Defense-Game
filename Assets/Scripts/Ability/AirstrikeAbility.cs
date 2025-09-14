@@ -1,7 +1,6 @@
 using UnityEngine;
 using UnityEngine.Tilemaps;
 using UnityEngine.UI; // Required for the UI Text element
-
 public class AirstrikeAbility : MonoBehaviour
 {
     [Header("Airstrike Settings")]
@@ -117,7 +116,6 @@ public class AirstrikeAbility : MonoBehaviour
         PlayerPrefs.Save();
         UpdateUI();
         Time.timeScale = 1.0f;
-
         DoAirstrike(center);
     }
 
@@ -183,7 +181,7 @@ public class AirstrikeAbility : MonoBehaviour
     {
         if (airstrikeCountText != null)
         {
-            airstrikeCountText.text = "Airstrikes: " + _airstrikeCount;
+            airstrikeCountText.text = "x " + _airstrikeCount;
         }
     }
 }       
