@@ -114,7 +114,7 @@ MonoBehaviour:
   buffMultiplier: 1.5
   buffDuration: 1.5
   baseDamage: 50
-  baseRange: 12
+  baseRange: 6
   blueflameRingPrefab: {fileID: 3244409283299348201, guid: 2eac7116ed261bb42ae5513fccf42cbd, type: 3}
   ringExpandSpeed: 3
   ringSpinSpeed: 180

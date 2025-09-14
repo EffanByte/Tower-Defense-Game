@@ -690,7 +690,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 135, y: 65}
+  m_AnchoredPosition: {x: 135, y: 87.9}
   m_SizeDelta: {x: 15, y: 15}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &397536580
@@ -1053,7 +1053,6 @@ MonoBehaviour:
   skins: []
   gridParent: {fileID: 911376680}
   skinCardPrefab: {fileID: 8452699834030268758, guid: a617da057f958cb48a30c16088d8e03a, type: 3}
-  defaultMaterial: {fileID: 2100000, guid: 725ee0b69d0360b4fa5da51e047c62f9, type: 2}
   cosmeticManager: {fileID: 2127146024}
 --- !u!114 &911376682
 MonoBehaviour:
@@ -1070,7 +1069,7 @@ MonoBehaviour:
   m_Padding:
     m_Left: 0
     m_Right: 0
-    m_Top: 0
+    m_Top: 10
     m_Bottom: 0
   m_ChildAlignment: 0
   m_StartCorner: 0
@@ -1195,7 +1194,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 5, y: 61.79}
+  m_AnchoredPosition: {x: 5, y: 85.81}
   m_SizeDelta: {x: 200, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1437863748
@@ -1608,7 +1607,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 300, y: 150}
+  m_SizeDelta: {x: 300, y: 200}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1612713660
 MonoBehaviour:

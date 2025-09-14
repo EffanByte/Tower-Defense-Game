@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.Tilemaps;
+using UnityEngine.UI; // Required for the UI Text element
 
 public class AirstrikeAbility : MonoBehaviour
 {
@@ -13,8 +14,15 @@ public class AirstrikeAbility : MonoBehaviour
     [SerializeField] private int circleSegments = 64;
     [SerializeField] private float lineWidth = 0.05f;
     [SerializeField] private Color lineColor = Color.red;
-
     [SerializeField] private GameObject explosionPrefab;
+
+    [Header("UI")]
+    [SerializeField] private Text airstrikeCountText; // Assign a UI Text element here
+
+    // --- NEW VARIABLES FOR SAVING/LOADING ---
+    private const string AirstrikeCountKey = "PlayerAirstrikeCount";
+    private int _airstrikeCount;
+    // ------------------------------------------
 
     private InputRouter router;
     private bool targeting = false;
@@ -26,7 +34,6 @@ public class AirstrikeAbility : MonoBehaviour
         if (!cam) cam = Camera.main;
         router = FindObjectOfType<InputRouter>();
 
-        // Create the LineRenderer entirely from code
         GameObject lrObj = new GameObject("AirstrikeRangeCircle");
         lrObj.transform.SetParent(transform, false);
 
@@ -38,6 +45,13 @@ public class AirstrikeAbility : MonoBehaviour
         rangeCircle.startColor = lineColor;
         rangeCircle.endColor = lineColor;
         rangeCircle.enabled = false;
+    }
+
+    void Start()
+    {
+        // Load the saved airstrike count when the game starts
+        _airstrikeCount = PlayerPrefs.GetInt(AirstrikeCountKey, 0);
+        UpdateUI();
     }
 
     void OnEnable()
@@ -57,43 +71,54 @@ public class AirstrikeAbility : MonoBehaviour
             router.OnUIClicked -= CancelTargeting;
         }
     }
-
-    void Update()
-    {
-        if (!targeting || !rangeCircle) return;
-
-        Vector2 screen = router.pointerAction.ReadValue<Vector2>();
-        Ray ray = cam.ScreenPointToRay(screen);
-
-        if (Physics.Raycast(ray, out var hit, 500f, LayerMask.GetMask("Buildable", "Ground")))
-        {
-            currentPos = hit.point;
-            DrawCircle(currentPos, bombRadius);
-            rangeCircle.enabled = true;
-        }
-    }
-
+    
     // Called by UI Button
     public void StartTargeting()
     {
+        // --- MODIFIED ---
+        // Check if the player has any airstrikes left
+        if (_airstrikeCount <= 0)
+        {
+            Debug.Log("[Airstrike] No airstrikes available!");
+            // Optionally, play a "negative" sound effect here
+            return;
+        }
+
         targeting = true;
-        Debug.Log("[Airstrike] Enter targeting mode.");
+        PauseWhileOrdering(); // Pause the game
     }
 
     void HandleWorldClick(RaycastHit hit, Tilemap tm, Vector3Int cell)
     {
         if (!targeting) return;
-        DoAirstrike(currentPos);
-        Debug.Log("[Airstrike] Airstrike at " + currentPos);
-        CancelTargeting();
+        
+        // Use an airstrike and save the new count
+        UseAirstrike(currentPos);
+        
+        CancelTargeting(); // This will disable the circle and resume the game
     }
-
-
+    
     void CancelTargeting()
     {
+        if (!targeting) return; // Prevent this from running multiple times
+        
         targeting = false;
         if (rangeCircle) rangeCircle.enabled = false;
+        ResumeGame(); // Resume the game
         Debug.Log("[Airstrike] Cancelled targeting.");
+    }
+    
+    // This new method handles the logic of using an airstrike
+    void UseAirstrike(Vector3 center)
+    {
+        // --- DECREMENT AND SAVE LOGIC ---
+        _airstrikeCount--;
+        PlayerPrefs.SetInt(AirstrikeCountKey, _airstrikeCount);
+        PlayerPrefs.Save();
+        UpdateUI();
+        Time.timeScale = 1.0f;
+
+        DoAirstrike(center);
     }
 
     void DoAirstrike(Vector3 center)
@@ -109,11 +134,37 @@ public class AirstrikeAbility : MonoBehaviour
                 health.TakeDamage(bombDamage, manager, agent);
         }
 
-        // 🔥 Instantiate explosion visual
         GameObject explosion = Instantiate(explosionPrefab, center, Quaternion.Euler(90,0,0));
-        explosion.transform.localScale = Vector3.one * bombRadius * 2f; // scale to diameter
-        Destroy(explosion, 0.83f); // cleanup after animation
-        Debug.Log($"[Airstrike] Bomb dropped at {center}, hits={hits.Length}");
+        explosion.transform.localScale = Vector3.one * bombRadius * 2f;
+        Destroy(explosion, 0.83f);
+        Debug.Log($"[Airstrike] Bomb dropped at {center}, hits={hits.Length}. {_airstrikeCount} remaining.");
+    }
+    
+    // --- UTILITY METHODS ---
+
+    public void PauseWhileOrdering()
+    {
+        Time.timeScale = 0.0f; 
+    }
+    
+    public void ResumeGame()
+    {
+        Time.timeScale = 1.0f;
+    }
+    
+    void Update()
+    {
+        if (!targeting || !rangeCircle) return;
+
+        Vector2 screen = router.pointerAction.ReadValue<Vector2>();
+        Ray ray = cam.ScreenPointToRay(screen);
+
+        if (Physics.Raycast(ray, out var hit, 500f, LayerMask.GetMask("Buildable", "Ground")))
+        {
+            currentPos = hit.point;
+            DrawCircle(currentPos, bombRadius);
+            rangeCircle.enabled = true;
+        }
     }
 
     void DrawCircle(Vector3 center, float radius)
@@ -126,4 +177,13 @@ public class AirstrikeAbility : MonoBehaviour
             rangeCircle.SetPosition(i, pos);
         }
     }
-}
+    
+    // New method to keep the UI up-to-date
+    void UpdateUI()
+    {
+        if (airstrikeCountText != null)
+        {
+            airstrikeCountText.text = "Airstrikes: " + _airstrikeCount;
+        }
+    }
+}       

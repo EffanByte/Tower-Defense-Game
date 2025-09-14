@@ -2,34 +2,33 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Text;
 using UnityEngine;
+using UnityEngine.UI; // for Image
 
 public class SkinManagerUI : MonoBehaviour
 {
     [System.Serializable]
     public class SkinMeta
     {
-        public string id;                 // unique key (e.g., "default", "green", "blue")
-        public string displayName;        // label on the card
-        public int cosmeticIndex = -1;    // -1 = Default, >=0 = CosmeticManager.availableSkins index
-        public bool unlockedByDefault;    // ignored in testing (we force unlocked)
+        public string id;                 
+        public string displayName;        
+        public int cosmeticIndex = -1;    
+        public bool unlockedByDefault;    
     }
 
     [Header("Data")]
-    [Tooltip("Leave empty to auto-populate from CosmeticManager (Default + availableSkins).")]
     public List<SkinMeta> skins = new List<SkinMeta>();
 
     [Header("UI")]
-    public Transform gridParent;      // panel with Grid/Vertical LayoutGroup
-    public GameObject skinCardPrefab; // prefab with SkinItemUI on the root
+    public Transform gridParent;
+    public GameObject skinCardPrefab;
 
     [Header("Managers")]
-    public CosmeticManager cosmeticManager; // auto-fills if null
+    public CosmeticManager cosmeticManager;
 
     private readonly List<SkinItemUI> _cards = new();
 
     private IEnumerator Start()
     {
-        // wait for CosmeticManager (if it spawns later)
         while (cosmeticManager == null)
         {
             cosmeticManager = CosmeticManager.Instance;
@@ -44,14 +43,11 @@ public class SkinManagerUI : MonoBehaviour
         }
         if (!gridParent) gridParent = transform;
 
-        // keep UI highlight in sync with changes
         if (cosmeticManager != null)
             cosmeticManager.OnSkinChanged += _ => RefreshSelection();
 
-        // if you didn’t hand-enter skins in Inspector, auto-list them
         AutoPopulateIfEmpty();
 
-        // build cards fresh
         RebuildCards();
         RefreshSelection();
     }
@@ -62,10 +58,8 @@ public class SkinManagerUI : MonoBehaviour
             cosmeticManager.OnSkinChanged -= _ => RefreshSelection();
     }
 
-    // Build from scratch (simple & reliable)
     private void RebuildCards()
     {
-        // clear old
         foreach (Transform child in gridParent)
             Destroy(child.gameObject);
         _cards.Clear();
@@ -77,6 +71,15 @@ public class SkinManagerUI : MonoBehaviour
             var go = Instantiate(skinCardPrefab, gridParent);
             go.name = $"SkinCard_{meta.id}_{i}";
 
+            //  add top padding for the first row
+            if (i == 0)
+            {
+                var rt = go.GetComponent<RectTransform>();
+                if (rt != null)
+                {
+                    rt.offsetMax -= new Vector2(0, 10); // shift down 10 from the top
+                }
+            }
             var card = go.GetComponent<SkinItemUI>();
             if (!card)
             {
@@ -84,7 +87,7 @@ public class SkinManagerUI : MonoBehaviour
                 continue;
             }
 
-            bool isUnlocked = IsUnlockedForTesting(meta);  // ← your “v = 1” testing rule
+            bool isUnlocked = IsUnlockedForTesting(meta);
             bool isSelected = IsSelected(meta.cosmeticIndex);
 
             card.Setup(
@@ -92,9 +95,20 @@ public class SkinManagerUI : MonoBehaviour
                 cosmeticIndex: meta.cosmeticIndex,
                 isUnlocked: isUnlocked,
                 isSelected: isSelected,
-                onSelect: idx => cosmeticManager?.SelectSkin(idx), // fires OnSkinChanged
-                onUnlock: () => UnlockForTesting(meta)             // placeholder
+                onSelect: idx => cosmeticManager?.SelectSkin(idx),
+                onUnlock: () => UnlockForTesting(meta)
             );
+
+            // 🔥 NEW: try load preview sprite from Assets/Textures
+            var previewSprite = LoadSkinSprite(meta.id);
+            if (previewSprite != null)
+            {
+                var img = go.GetComponentInChildren<Image>();
+                if (img != null)
+                {
+                    img.sprite = previewSprite;
+                }
+            }
 
             _cards.Add(card);
         }
@@ -107,26 +121,18 @@ public class SkinManagerUI : MonoBehaviour
             _cards[i].SetSelected(skins[i].cosmeticIndex == selected);
     }
 
-    // ──────────────────────────────────────────────────────────────────────────
-    // Testing unlock logic (keeps your “v = 1” behavior)
-    // ──────────────────────────────────────────────────────────────────────────
     private bool IsUnlockedForTesting(SkinMeta meta)
     {
-        if (meta.cosmeticIndex == -1) return true; // Default always unlocked
-        int v = 1; // <- DO NOT CHANGE: your testing flag
+        if (meta.cosmeticIndex == -1) return true;
+        int v = 1; 
         return v == 1;
     }
 
     private void UnlockForTesting(SkinMeta meta)
     {
-        // For now everything is considered unlocked (v=1).
-        // If you later hook ads, handle success here and call RebuildCards()/RefreshSelection().
         Debug.Log($"[SkinManagerUI] (Test) Unlock requested for '{meta.displayName}' — already unlocked in test.");
     }
 
-    // ──────────────────────────────────────────────────────────────────────────
-    // Auto-populate from CosmeticManager (Default + availableSkins)
-    // ──────────────────────────────────────────────────────────────────────────
     private void AutoPopulateIfEmpty()
     {
         if (skins != null && skins.Count > 0) return;
@@ -166,7 +172,27 @@ public class SkinManagerUI : MonoBehaviour
         return s.Trim('_');
     }
 
+    // ─────────────────────────────────────────────
+    // 🔥 NEW HELPER: load PNG as Sprite from Assets/Textures
+    // ─────────────────────────────────────────────
+    private Sprite LoadSkinSprite(string id)
+    {
+        string path = System.IO.Path.Combine(Application.dataPath, "Textures", id + ".png");
+        if (!System.IO.File.Exists(path))
+        {
+            Debug.LogWarning($"[SkinManagerUI] Preview not found for {id} at {path}");
+            return null;
+        }
+
+        byte[] pngData = System.IO.File.ReadAllBytes(path);
+        Texture2D tex = new Texture2D(2, 2, TextureFormat.RGBA32, false);
+        if (tex.LoadImage(pngData))
+        {
+            return Sprite.Create(tex, new Rect(0, 0, tex.width, tex.height), new Vector2(0.5f, 0.5f));
+        }
+        return null;
+    }
+
     public void ShowUI() => transform.parent.gameObject.SetActive(true);
     public void HideUI() => transform.parent.gameObject.SetActive(false);
-    
 }

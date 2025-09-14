@@ -172,7 +172,7 @@ MonoBehaviour:
   gun: {fileID: 0}
   baseDamage: 10
   baseCooldown: 1.5
-  baseRange: 8
+  baseRange: 4
   recoilDistance: 0.5
   enemyLayerName: Enemy
   muzzleAnchor: {fileID: 537252436442521661}
