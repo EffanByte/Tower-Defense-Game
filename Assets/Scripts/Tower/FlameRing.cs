@@ -14,10 +14,10 @@ public class FlameRing : MonoBehaviour
 
     void Awake()
     {
+        maxRadius = GetComponentInParent<TowerUpgrade>().CurrentRange;
         col = GetComponent<SphereCollider>();
         col.isTrigger = true;
         col.radius = 0.1f;
-
         startScale = transform.localScale;
 
         sr = GetComponentInChildren<SpriteRenderer>();
@@ -52,15 +52,15 @@ public class FlameRing : MonoBehaviour
         }
     }
 
-    void OnTriggerEnter(Collider other)
-    {
-        // Apply damage if enemy
-        EnemyHealth health = other.GetComponent<EnemyHealth>();
-        EnemyPathAgent agent = other.GetComponent<EnemyPathAgent>();
-        EnemySpawner manager = agent ? agent.GetComponentInParent<EnemySpawner>() : null;
-        if (health != null)
-        {
-            health.TakeDamage(GetComponentInParent<TowerUpgrade>().CurrentDamage, manager, agent); // or pass damage from turret
-        }
-    }
+    // void OnTriggerEnter(Collider other)
+    // {
+    //     // Apply damage if enemy
+    //     EnemyHealth health = other.GetComponent<EnemyHealth>();
+    //     EnemyPathAgent agent = other.GetComponent<EnemyPathAgent>();
+    //     EnemySpawner manager = agent ? agent.GetComponentInParent<EnemySpawner>() : null;
+    //     if (health != null)
+    //     {
+    //         health.TakeDamage(GetComponentInParent<TowerUpgrade>().CurrentDamage, manager, agent); // or pass damage from turret
+    //     }
+    // }
 }
