@@ -17,7 +17,7 @@ public class GunTurret : MonoBehaviour
     private float recoilReturnSpeed;
 
     [Header("Targeting")]
-    public string enemyLayerName = "Enemy";
+    [SerializeField] string enemyLayerName = "Enemy";
 
     // ── MUZZLE FLASH / SHOOT SPRITE ───────────────────────────────────────────
     [Header("Muzzle Flash")]
@@ -93,26 +93,52 @@ public class GunTurret : MonoBehaviour
         }
     }
 
-    Transform GetClosestEnemy()
+Transform GetClosestEnemy()
+{
+    float radius = upgrade ? upgrade.CurrentRange : baseRange;
+    Collider[] hits = Physics.OverlapSphere(transform.position, radius, 1 << enemyLayer);
+
+    // If this object is a "Sniper", it has special targeting priorities.
+    if (this.CompareTag("Sniper"))
     {
-        float radius = upgrade ? upgrade.CurrentRange : baseRange;
-        Collider[] hits = Physics.OverlapSphere(transform.position, radius, 1 << enemyLayer);
+        float minStealthDist = Mathf.Infinity;
+        Transform nearestStealth = null;
 
-        float minDist = Mathf.Infinity;
-        Transform nearest = null;
-
+        // --- Priority Pass: Find the closest "stealth" enemy ---
         foreach (var hit in hits)
         {
-            float dist = Vector3.Distance(transform.position, hit.transform.position);
-            if (dist < minDist)
+            // We only care about stealth enemies in this pass
+            if (hit.CompareTag("Stealth"))
             {
-                minDist = dist;
-                nearest = hit.transform;
+                float dist = Vector3.Distance(transform.position, hit.transform.position);
+                if (dist < minStealthDist)
+                {
+                    minStealthDist = dist;
+                    nearestStealth = hit.transform;
+                }
             }
         }
 
-        return nearest;
+        if (nearestStealth != null)
+            return nearestStealth;
+
     }
+
+    float minDist = Mathf.Infinity;
+    Transform nearest = null;
+
+    foreach (var hit in hits)
+    {
+        float dist = Vector3.Distance(transform.position, hit.transform.position);
+        if (dist < minDist)
+        {
+            minDist = dist;
+            nearest = hit.transform;
+        }
+    }
+
+    return nearest;
+}
 
     void Shoot(Transform target)
     {
