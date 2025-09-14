@@ -4,7 +4,7 @@ using UnityEngine;
 public class BlueFlameRing : MonoBehaviour
 {
     [Header("Runtime (filled by Init)")]
-    private float expandSpeed = 2f;
+    private float expandSpeed = 5f;
     private float maxRadius   = 4f;
     private float spinSpeed   = 180f;
     private float damage      = 10f;
@@ -92,18 +92,15 @@ public class BlueFlameRing : MonoBehaviour
         }
     }
 
-    void OnCollisionEnter(Collision other)
+    void OnTriggerEnter(Collider other)
     {
-        Debug.Log("Trigger is running");
-        // Only damage enemies (by layer mask)
-        if (other.gameObject.layer == enemyMask) return;
-
-        var health = other.gameObject.GetComponent<EnemyHealth>();
-        var agent  = other.gameObject.GetComponent<EnemyPathAgent>();
-        Debug.Log("triggered");
-        var manager = agent ? agent.GetComponentInParent<EnemySpawner>() : null;
-
+        // Apply damage if enemy
+        EnemyHealth health = other.GetComponent<EnemyHealth>();
+        EnemyPathAgent agent = other.GetComponent<EnemyPathAgent>();
+        EnemySpawner manager = agent ? agent.GetComponentInParent<EnemySpawner>() : null;
         if (health != null)
-            health.TakeDamage((int)damage, manager, agent);
+        {
+            health.TakeDamage(GetComponentInParent<TowerUpgrade>().CurrentDamage, manager, agent); // or pass damage from turret
+        }
     }
 }

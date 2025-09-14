@@ -77,6 +77,10 @@ public class WaveManager : MonoBehaviour
     [Tooltip("Generate at most this many auto waves after manual; set large for endless.")]
     public int maxAutoWaves = 999;
 
+    void Awake()
+    {
+        Time.timeScale = 1f; // resume before reload
+    }
     void OnEnable()
     {
         foreach (var lane in lanes)

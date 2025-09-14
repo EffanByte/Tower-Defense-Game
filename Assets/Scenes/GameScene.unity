@@ -4892,7 +4892,7 @@ MonoBehaviour:
   heavyUnlockWave: 2
   baseStealth: 0
   stealthPer2Waves: 10
-  stealthUnlockWave: 5
+  stealthUnlockWave: 1
   autoBaseInterval: 0.8
   autoIntervalFalloff: 0.04
   autoMinInterval: 0.25

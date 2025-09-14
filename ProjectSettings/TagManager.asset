@@ -7,6 +7,8 @@ TagManager:
   - Gun
   - Light
   - Heavy
+  - Stealth
+  - Sniper
   layers:
   - Default
   - TransparentFX
@@ -19,7 +21,7 @@ TagManager:
   - Tower
   - Dead
   - UI3D
-  - 
+  - Stealth
   - 
   - 
   - 

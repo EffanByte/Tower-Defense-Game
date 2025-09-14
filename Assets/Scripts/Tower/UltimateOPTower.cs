@@ -23,7 +23,7 @@ public class UltimateOpTower : MonoBehaviour
     [Tooltip("Prefab with SphereCollider (isTrigger) + child SpriteRenderer. (Can be the same prefab used by your flame tower.)")]
     [SerializeField] private GameObject blueflameRingPrefab;
 
-    [SerializeField] private float ringExpandSpeed = 5f;
+    [SerializeField] private float ringExpandSpeed = 20f;
     [SerializeField] private float ringSpinSpeed = 180f;
     [SerializeField] private Color ringColor = new Color(0.35f, 0.65f, 1.0f, 1f); // blue-ish
     [SerializeField] private float ringYOffset = 0.1f; // hover slightly above ground
