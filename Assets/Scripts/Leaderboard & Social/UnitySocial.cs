@@ -1,3 +1,4 @@
+
 using UnityEngine;
 using UnityEngine.SocialPlatforms;
 using GooglePlayGames;
@@ -5,10 +6,9 @@ using GooglePlayGames;
 public class UnitySocial : MonoBehaviour {
 
     void Start () {
+        DontDestroyOnLoad(this.gameObject);
         PlayGamesPlatform.Activate();   
         Social.localUser.Authenticate(ProcessAuthentication);
-        Social.ShowLeaderboardUI();
-        DontDestroyOnLoad(this.gameObject);
     }
 
     // This function gets called when Authenticate completes
@@ -19,5 +19,22 @@ public class UnitySocial : MonoBehaviour {
         else
             Debug.Log("Failed to authenticate"); 
     }
-
+    public void PostWaveScore(int waves)
+    {
+        PlayGamesPlatform.Instance.ReportScore(waves, "WAVE LEADERBOARD ID HERE", (bool success) =>
+        {
+            Debug.Log("wave count posted successfully");
+        }   );
+    }
+        public void PostKillScore(int waves)
+    {
+        PlayGamesPlatform.Instance.ReportScore(waves, "KILL COUNT LEADERBOARD ID HERE", (bool success) =>
+        {
+            Debug.Log("kill count posted successfully");
+        }   );
+    }
+    public void DisplayLeaderBoard()
+    {
+        PlayGamesPlatform.Instance.ShowLeaderboardUI("LEADERBOARD ID HERE");
+    }
 }
