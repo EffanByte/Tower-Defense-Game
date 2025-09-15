@@ -1,11 +1,13 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
 
 public class EnemySpawner : MonoBehaviour
 {
     public TDLevel level;
     [SerializeField] private int spawnerIndex = 0;
+    [SerializeField] private TextMeshProUGUI totalKillsUI;
 
     // These fields are for testing/default behaviour. WaveManager will override them.
     private GameObject enemyPrefab;
@@ -15,7 +17,6 @@ public class EnemySpawner : MonoBehaviour
     [Header("Motion defaults")]
     private float enemySpeed = 3.5f;
     private float enemyY = 0.1f;
-
     IReadOnlyList<Vector3> _waypoints;
 
     [Header("Leak settings")]
@@ -97,9 +98,9 @@ public class EnemySpawner : MonoBehaviour
         // --- NEW: Increment the total enemies killed stat ---
         int totalKills = PlayerPrefs.GetInt("TotalKills", 0);
         totalKills++;
+        totalKillsUI.text = "Total Kills: " + totalKills;  
         PlayerPrefs.SetInt("TotalKills", totalKills);
         PlayerPrefs.Save(); // Use Save() if you want to write to disk immediately.
-
         // Notify WaveManager to update the active enemy count
         EnemyRemoved?.Invoke(agent);
     }

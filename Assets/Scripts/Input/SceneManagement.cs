@@ -15,7 +15,7 @@ public class SceneManagement : MonoBehaviour
 
     public void GoToMenu()
     {
-        SceneManager.LoadScene("TitleScreen");
+        SceneManager.LoadScene("TitleScene");
     }
     public void GoToCosmetics()
     {

@@ -307,8 +307,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 97106955}
-  - component: {fileID: 97106954}
-  - component: {fileID: 97106956}
   m_Layer: 0
   m_Name: MonetizationManager
   m_TagString: Untagged
@@ -316,18 +314,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &97106954
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 97106953}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 74ec24482bd2ca644a3daa5a4c8b2b9a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!4 &97106955
 Transform:
   m_ObjectHideFlags: 0
@@ -343,18 +329,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &97106956
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 97106953}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 57f39373410877546b04c6dbd2f1e685, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &100934866
 GameObject:
   m_ObjectHideFlags: 0
@@ -1359,7 +1333,6 @@ RectTransform:
   m_Children:
   - {fileID: 100934867}
   - {fileID: 2129559164}
-  - {fileID: 1975255195}
   m_Father: {fileID: 387447082}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -2018,6 +1991,7 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 263212096}
+  - {fileID: 1975255195}
   m_Father: {fileID: 31508678}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
@@ -2056,6 +2030,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   level: {fileID: 1227360445}
   spawnerIndex: 0
+  totalKillsUI: {fileID: 0}
   leakDamage: 1
 --- !u!4 &436284592
 Transform:
@@ -2728,52 +2703,6 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 244, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!1 &945195340
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 945195342}
-  - component: {fileID: 945195341}
-  m_Layer: 0
-  m_Name: AdManager
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &945195341
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 945195340}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ff5483df4a360e24e93c78708a787e06, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _androidGameId: 5946475
-  _testMode: 1
---- !u!4 &945195342
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 945195340}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 6.6483994, y: 10.72979, z: -8.230863}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &974932408
 GameObject:
   m_ObjectHideFlags: 0
@@ -4379,7 +4308,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7b79b5624d944058bd39aad2b90fb275, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  productId: com.TDGame.airstrike
+  productId: 
   buttonType: 0
   automaticallyConfirmTransaction: 1
   onProductFetched:
@@ -5016,6 +4945,7 @@ MonoBehaviour:
   autoMinInterval: 0.25
   autoDelayAfterWave: 3
   maxAutoWaves: 999
+  healthMultiplierPer5Waves: 0.7
 --- !u!4 &1662511614
 Transform:
   m_ObjectHideFlags: 0
@@ -5830,11 +5760,11 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 277242553}
+  m_Father: {fileID: 422672237}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: -50}
+  m_AnchoredPosition: {x: -75, y: 40}
   m_SizeDelta: {x: 200, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1975255196
@@ -5970,7 +5900,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: -33.79}
   m_SizeDelta: {x: 200, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &2129559165
@@ -6090,4 +6020,3 @@ SceneRoots:
   - {fileID: 1705578894}
   - {fileID: 110472944}
   - {fileID: 97106955}
-  - {fileID: 945195342}

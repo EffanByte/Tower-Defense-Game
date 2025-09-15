@@ -74,17 +74,14 @@ public class AirstrikeAbility : MonoBehaviour
     // Called by UI Button
     public void StartTargeting()
     {
-        // --- MODIFIED ---
+        ResumeGame();
         // Check if the player has any airstrikes left
         if (_airstrikeCount <= 0)
         {
             Debug.Log("[Airstrike] No airstrikes available!");
-            // Optionally, play a "negative" sound effect here
             return;
         }
-
         targeting = true;
-        PauseWhileOrdering(); // Pause the game
     }
 
     void HandleWorldClick(RaycastHit hit, Tilemap tm, Vector3Int cell)

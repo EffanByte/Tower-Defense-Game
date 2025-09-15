@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
 
 public class WaveManager : MonoBehaviour
 {
@@ -121,6 +122,7 @@ public class WaveManager : MonoBehaviour
         // --- 1) Run authored waves (if any) ---
         for (_waveIndex = 0; _waveIndex < waves.Count; _waveIndex++)
         {
+            
             yield return StartCoroutine(RunSingleWave( GetManualWave(_waveIndex), _waveIndex + 1));
         }
 
@@ -332,15 +334,5 @@ public class WaveManager : MonoBehaviour
         // 2. Get the total kill count from PlayerPrefs
         int totalKills = PlayerPrefs.GetInt("TotalKills", 0);
 
-        // 3. Report both scores using the LeaderboardManager
-        // if (LeaderboardManager.Instance != null)
-        // {
-        //     LeaderboardManager.Instance.ReportWaveScore(finalWave);
-        //     LeaderboardManager.Instance.ReportKillScore(totalKills);
-        // }
-        // else
-        // {
-        //     Debug.LogWarning("LeaderboardManager not found. Could not report scores.");
-        // }
     }
 }
