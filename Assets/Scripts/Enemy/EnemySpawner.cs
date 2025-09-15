@@ -91,8 +91,16 @@ public class EnemySpawner : MonoBehaviour
         Destroy(agent.gameObject);
     }
 
+    // This method is called from your combat code (e.g., EnemyHealth) when an enemy dies mid-path
     public void NotifyEnemyKilled(EnemyPathAgent agent)
     {
+        // --- NEW: Increment the total enemies killed stat ---
+        int totalKills = PlayerPrefs.GetInt("TotalKills", 0);
+        totalKills++;
+        PlayerPrefs.SetInt("TotalKills", totalKills);
+        PlayerPrefs.Save(); // Use Save() if you want to write to disk immediately.
+
+        // Notify WaveManager to update the active enemy count
         EnemyRemoved?.Invoke(agent);
     }
 }

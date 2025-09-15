@@ -79,7 +79,7 @@ public class WaveManager : MonoBehaviour
 
     [Header("Enemy Scaling")]
     [Tooltip("Health multiplier per 5 waves. 0.2 = +20% HP at wave 5, +40% at wave 10, etc.")]
-    public float healthMultiplierPer5Waves = 0.6f;
+    public float healthMultiplierPer5Waves = 0.7f;
 
     void Awake()
     {
@@ -93,6 +93,8 @@ public class WaveManager : MonoBehaviour
             lane.EnemySpawned += OnEnemySpawned;
             lane.EnemyRemoved += OnEnemyRemoved;
         }
+        if (HealthManager.Instance != null)
+            HealthManager.Instance.OnDeath += HandlePlayerDeath;
     }
 
     void OnDisable()
@@ -103,6 +105,8 @@ public class WaveManager : MonoBehaviour
             lane.EnemySpawned -= OnEnemySpawned;
             lane.EnemyRemoved -= OnEnemyRemoved;
         }
+        if (HealthManager.Instance != null)
+            HealthManager.Instance.OnDeath -= HandlePlayerDeath;
     }
 
     void Start()
@@ -117,7 +121,7 @@ public class WaveManager : MonoBehaviour
         // --- 1) Run authored waves (if any) ---
         for (_waveIndex = 0; _waveIndex < waves.Count; _waveIndex++)
         {
-            yield return StartCoroutine(RunSingleWave(GetManualWave(_waveIndex), _waveIndex + 1));
+            yield return StartCoroutine(RunSingleWave( GetManualWave(_waveIndex), _waveIndex + 1));
         }
 
         // --- 2) Auto-generate more waves if enabled ---
@@ -316,5 +320,27 @@ public class WaveManager : MonoBehaviour
         foreach (var enemy in corpses)
             if (enemy && enemy.gameObject.layer == deadLayer)
                 Destroy(enemy.gameObject);
+    }
+
+    private void HandlePlayerDeath()
+    {
+        Debug.Log("Player has died. Reporting final scores to leaderboards.");
+
+        // 1. Get the final wave score from this script
+        int finalWave = _waveIndex;
+
+        // 2. Get the total kill count from PlayerPrefs
+        int totalKills = PlayerPrefs.GetInt("TotalKills", 0);
+
+        // 3. Report both scores using the LeaderboardManager
+        // if (LeaderboardManager.Instance != null)
+        // {
+        //     LeaderboardManager.Instance.ReportWaveScore(finalWave);
+        //     LeaderboardManager.Instance.ReportKillScore(totalKills);
+        // }
+        // else
+        // {
+        //     Debug.LogWarning("LeaderboardManager not found. Could not report scores.");
+        // }
     }
 }
