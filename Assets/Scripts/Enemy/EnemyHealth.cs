@@ -39,11 +39,12 @@ public class EnemyHealth : MonoBehaviour
     {
         if (currentHealth <= 0) return;
 
-        currentHealth = amount;
+        currentHealth -= amount;
         OnDamaged?.Invoke(this, currentHealth);
-
+        Debug.Log("taking damage");
         if (currentHealth <= 0)
         {
+            Debug.Log("Dead");
             // Notify spawner for cleanup
             if (manager != null && agent != null)
                 manager.NotifyEnemyKilled(agent);
@@ -53,7 +54,7 @@ public class EnemyHealth : MonoBehaviour
             GetComponent<EnemyPathAgent>().enabled = false;
             //  Rotate to lay flat 
             transform.rotation = Quaternion.Euler(90f, 90f, 0f);
-            
+
             gameObject.layer = LayerMask.NameToLayer("Dead");
 
             //  Monetization reward 
