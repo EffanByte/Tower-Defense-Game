@@ -2030,7 +2030,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   level: {fileID: 1227360445}
   spawnerIndex: 0
-  totalKillsUI: {fileID: 0}
+  totalKillsUI: {fileID: 263212097}
   leakDamage: 1
 --- !u!4 &436284592
 Transform:
