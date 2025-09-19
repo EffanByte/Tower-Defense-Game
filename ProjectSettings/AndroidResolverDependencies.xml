@@ -1,11 +1,8 @@
 <dependencies>
   <packages>
     <package>com.google.games:gpgs-plugin-support:2.1.0</package>
-    <package>com.unity3d.ads:unity-ads:[4.12.0,4.13[</package>
   </packages>
-  <files>
-    <file>Assets/GooglePlayGames/com.google.play.games/Editor/m2repository/com/google/games/gpgs-plugin-support/2.1.0/gpgs-plugin-support-2.1.0.aar</file>
-  </files>
+  <files />
   <settings>
     <setting name="androidAbis" value="arm64-v8a" />
     <setting name="bundleId" value="com.UnityTechnologies.com.unity.template.urpblank" />
@@ -15,7 +12,7 @@
     <setting name="installAndroidPackages" value="True" />
     <setting name="packageDir" value="Assets/Plugins/Android" />
     <setting name="patchAndroidManifest" value="True" />
-    <setting name="patchMainTemplateGradle" value="True" />
+    <setting name="patchMainTemplateGradle" value="False" />
     <setting name="projectExportEnabled" value="False" />
     <setting name="useJetifier" value="False" />
   </settings>
